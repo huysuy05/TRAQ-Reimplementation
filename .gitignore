@@ -1,1 +1,4 @@
 .env
+.hf_cache_clean
+venv
+.DS_Store
