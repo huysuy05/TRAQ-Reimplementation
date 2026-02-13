@@ -1,4 +1,3 @@
-# traq_run.py
 # End-to-end TRAQ-style pipeline (matches paper’s retriever-set construction):
 # 1) Retriever NCM: s_i = -R(q_i, p*_i) where p*_i is the annotated most relevant passage.
 #    In your data, p* is taken from SearchResults (Rank==0 / first).
@@ -23,20 +22,15 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import numpy as np
 from tqdm import tqdm
 
-# --- Contriever (HF Transformers) ---
+
 import torch
 from transformers import AutoTokenizer, AutoModel
 
-# --- OpenAI (optional, for LLM stage) ---
 try:
     from openai import OpenAI
 except Exception:
     OpenAI = None  # type: ignore
 
-
-# -------------------------
-# IO
-# -------------------------
 
 def load_env_from_dotenv(path: str) -> None:
     if not os.path.exists(path):
@@ -171,9 +165,6 @@ def load_few_shot_examples(path: Optional[str]) -> List[Dict[str, str]]:
     return out
 
 
-# -------------------------
-# Text normalization
-# -------------------------
 
 def norm_text(s: str) -> str:
     s = (s or "").lower().strip()
@@ -235,10 +226,6 @@ def llm_example_nonconformity(samples: List[str], golds_norm: List[str], rouge_t
 
 
 
-# -------------------------
-# Conformal quantile (paper-style finite-sample correction)
-# -------------------------
-
 def conformal_quantile(scores: List[float], alpha: float) -> float:
     """
     tau = Quantile({s_n}; ceil((N+1)(1-alpha))/N)
@@ -254,10 +241,6 @@ def conformal_quantile(scores: List[float], alpha: float) -> float:
     k = min(max(k, 0), n - 1)
     return float(s[k])
 
-
-# -------------------------
-# Contriever encoder
-# -------------------------
 
 class ContrieverEncoder:
     def __init__(self, model_name: str, device: Optional[str] = None):
@@ -301,10 +284,6 @@ class ContrieverEncoder:
 def dot_sim(q_emb: np.ndarray, p_embs: np.ndarray) -> np.ndarray:
     return (p_embs @ q_emb.reshape(-1, 1)).reshape(-1)
 
-
-# -------------------------
-# SearchResults -> text + p* selection
-# -------------------------
 
 def searchresult_to_text(sr: Dict[str, Any]) -> str:
     for key in ["text", "passage", "snippet", "contents", "content", "Text", "Passage", "Snippet"]:
@@ -369,10 +348,6 @@ def pick_p_star_from_searchresults(ex: Dict[str, Any]) -> Tuple[Optional[str], O
 
     return (txt if txt else None), best_idx
 
-
-# -------------------------
-# Optional LLM stage (unchanged)
-# -------------------------
 
 def rouge1_f1(a: str, b: str) -> float:
     ta = norm_text(a).split()
@@ -521,14 +496,266 @@ def llm_prediction_set(samples: List[str], tau_llm: float, rouge_thr: float = 0.
     return reps
 
 
-# -------------------------
-# Main
-# -------------------------
+def llm_prediction_set_with_scores(
+    samples: List[str],
+    tau_llm: float,
+    rouge_thr: float = 0.7,
+) -> List[Tuple[str, float]]:
+    M = max(len(samples), 1)
+    clusters = cluster_by_rouge(samples, thr=rouge_thr)
+    reps: List[Tuple[str, float]] = []
+    for c in clusters:
+        conf = len(c) / M
+        score = -conf
+        if score <= tau_llm:
+            reps.append((c[0], float(conf)))
+    return reps
+
+
+def weighted_quantile(values: torch.Tensor, q: float, sample_weight: torch.Tensor) -> torch.Tensor:
+    if values.numel() == 0:
+        return torch.tensor(0.0, dtype=torch.float32)
+    q = float(min(max(q, 0.0), 1.0))
+    values = values.detach().float().view(-1)
+    weights = sample_weight.detach().float().view(-1)
+    if weights.numel() != values.numel():
+        raise ValueError("sample_weight must have same length as values.")
+    sorter = torch.argsort(values)
+    v = values[sorter]
+    w = weights[sorter].clamp(min=0)
+    if float(w.sum()) <= 0:
+        w = torch.ones_like(w)
+    cdf = torch.cumsum(w, dim=0)
+    cdf = (cdf - 0.5 * w) / float(w.sum())
+    cdf_np = cdf.detach().cpu().numpy()
+    v_np = v.detach().cpu().numpy()
+    out = float(np.interp(q, cdf_np, v_np))
+    return torch.tensor(out, dtype=torch.float32)
+
+
+def normalized_entropy(prob: Sequence[int]) -> float:
+    """
+    prob: cluster counts of m sampled responses
+    returns NE in [0, 1]
+    """
+    m = int(sum(prob)) if int(sum(prob)) > 0 else 30
+    cnt = prob
+    probs = np.array([c / m for c in cnt], dtype=float)
+    ent = -np.sum(probs * np.log(probs + 1e-12))
+    return float(ent / max(math.log(m), 1e-12))
+
+def compute_refusal_metrics(labels: List[int], rejections: List[bool]) -> Tuple[float, float, float]:
+    """
+    labels: 1 if answerable, 0 if unanswerable
+    rejections: True if LLM refused to answer (i.e., said "Can't answer")
+
+    Returns: (R_refuse, P_refuse, f1)
+    """
+    if not labels or not rejections or len(labels) != len(rejections):
+        return 0.0, 0.0, 0.0
+
+    n = len(labels)
+    rcorrect = sum(labels) / n  # fraction of answerable
+
+    q_reject = [i for i, r in enumerate(rejections) if r]
+    n_reject = len(q_reject)
+
+    # Recall: among unanswerables, how many got rejected
+    num_unans = sum(1 for i in range(n) if labels[i] == 0)
+    if num_unans == 0:
+        r_refuse = 0.0
+    else:
+        r_refuse = sum(1 for i in q_reject if labels[i] == 0) / (1 - rcorrect)
+
+    # Precision: among all rejections, how many were correct
+    if n_reject == 0:
+        p_refuse = 0.0
+    else:
+        p_refuse = sum(1 for i in q_reject if labels[i] == 0) / n_reject
+
+    denom = max(2 - p_refuse * r_refuse, 1e-6)
+    f1 = (p_refuse * r_refuse) / denom if denom else 0.0
+
+    return r_refuse, p_refuse, f1
+
+
+def MonCP_cal(
+    all_logits: torch.Tensor,
+    labels: torch.Tensor,
+    ratio: float,
+    grouped_text: List[List[Tuple[str, float, bool]]],
+    score: Sequence[float],
+    ne: Sequence[float],
+    weight: Sequence[float],
+    qs: int = 10,
+    use_mlp: bool = False,
+    use_weight: bool = False,
+) -> Tuple[List[List[Tuple[str, bool]]], List[float], int]:
+    yloc = labels.view(-1)
+    ratio = float(np.mean(labels.detach().cpu().numpy()))
+    ncs = all_logits[:, 1]
+    if not use_mlp:
+        ncs = 1 - torch.tensor(ne, dtype=torch.float32) + 0.01 * all_logits[:, 1]
+    ncs0 = ncs[yloc == 0]
+    ncs1 = ncs[yloc == 1]
+    qs0s = [i / 10 for i in range(10, qs * 10 + 1)]
+    max_len = 1000000000
+    m_ans: List[List[Tuple[str, bool]]] = []
+    a: List[float] = []
+    for qs0 in qs0s:
+        lenth = 0
+        if ratio <= 1e-12:
+            qs1 = 0.0
+        else:
+            qs1 = (1 - ratio) / ratio * (qs - qs0)
+        qs1 = float(min(max(qs1, 0.0), 100.0))
+        if use_weight:
+            w = torch.tensor(weight, dtype=torch.float32)
+            quantile0 = weighted_quantile(ncs0, 1 - qs0 / 100, w[yloc == 0]) if ncs0.numel() > 0 else torch.tensor(0.0)
+            quantile1 = (
+                1 - weighted_quantile(1 - ncs1, 1 - qs1 / 100, w[yloc == 1]) if ncs1.numel() > 0 else torch.tensor(0.0)
+            )
+        else:
+            quantile0 = torch.quantile(ncs0, 1 - qs0 / 100) if ncs0.numel() > 0 else torch.tensor(0.0)
+            quantile1 = torch.quantile(ncs1, qs1 / 100) if ncs1.numel() > 0 else torch.tensor(0.0)
+        if qs0 == qs:
+            quantile1 = torch.tensor(-100.0)
+
+        Non_scores: List[float] = []
+        weight_non: List[float] = []
+        for i in range(len(grouped_text)):
+            if ncs[i] > quantile0 and ncs[i] > quantile1:
+                if labels[i] != 0:
+                    Non_scores.append(float(score[i]))
+                    weight_non.append(float(weight[i]))
+            elif not (ncs[i] < quantile0 and ncs[i] < quantile1):
+                if labels[i] == 1:
+                    Non_scores.append(float(score[i]))
+                    weight_non.append(float(weight[i]))
+
+        if len(Non_scores) == 0:
+            text_quantile = float("inf")
+        elif not use_weight:
+            text_quantile = float(np.quantile(Non_scores, qs / 100))
+        else:
+            text_quantile = float(
+                -weighted_quantile(
+                    -torch.tensor(Non_scores, dtype=torch.float32),
+                    1 - qs / 100,
+                    torch.tensor(weight_non, dtype=torch.float32),
+                ).item()
+            )
+
+        ans_list: List[List[Tuple[str, bool]]] = []
+        for i in range(len(grouped_text)):
+            if ncs[i] < quantile0 and ncs[i] < quantile1:
+                tmp_ans: List[Tuple[str, bool]] = [("Can't answer", bool(labels[i] == 0))]
+                ans_list.append(tmp_ans)
+            elif ncs[i] > quantile0 and ncs[i] > quantile1:
+                tmp_ans = []
+                for ans in grouped_text[i]:
+                    if float(ans[1]) >= text_quantile:
+                        lenth += 1
+                        tmp_ans.append((ans[0], bool(ans[2])))
+                ans_list.append(tmp_ans)
+            else:
+                lenth += 1
+                tmp_ans = [("Can't answer", bool(labels[i] == 0))]
+                for ans in grouped_text[i]:
+                    if float(ans[1]) >= text_quantile:
+                        lenth += 1
+                        tmp_ans.append((ans[0], bool(ans[2])))
+                ans_list.append(tmp_ans)
+
+        if lenth < max_len:
+            max_len = lenth
+            m_ans = ans_list
+            a = [float(quantile0), float(quantile1), float(text_quantile), float(qs0), float(qs1)]
+
+    return m_ans, a, max_len
+
+
+def MonCP_infer(
+    all_logits: torch.Tensor,
+    labels: torch.Tensor,
+    grouped_text: List[List[Tuple[str, float, bool]]],
+    ne: Sequence[float],
+    a: Sequence[float],
+    use_mlp: bool = False,
+) -> List[List[Tuple[str, bool]]]:
+    quantile0, quantile1, text_quantile = float(a[0]), float(a[1]), float(a[2])
+    ncs = all_logits[:, 1]
+    if not use_mlp:
+        ncs = 1 - torch.tensor(ne, dtype=torch.float32) + 0.01 * all_logits[:, 1]
+    ans_list: List[List[Tuple[str, bool]]] = []
+    for i in range(len(grouped_text)):
+        if ncs[i] < quantile0 and ncs[i] < quantile1:
+            ans_list.append([("Can't answer", bool(labels[i] == 0))])
+        elif ncs[i] > quantile0 and ncs[i] > quantile1:
+            tmp_ans: List[Tuple[str, bool]] = []
+            for ans in grouped_text[i]:
+                if float(ans[1]) >= text_quantile:
+                    tmp_ans.append((ans[0], bool(ans[2])))
+            ans_list.append(tmp_ans)
+        else:
+            tmp_ans = [("Can't answer", bool(labels[i] == 0))]
+            for ans in grouped_text[i]:
+                if float(ans[1]) >= text_quantile:
+                    tmp_ans.append((ans[0], bool(ans[2])))
+            ans_list.append(tmp_ans)
+    return ans_list
+
+
+def empirical_coverage_curve(
+    cal_scores: Sequence[float],
+    eval_scores: Sequence[float],
+    alpha_grid: Sequence[float],
+) -> Tuple[List[float], List[float]]:
+    expected: List[float] = []
+    empirical: List[float] = []
+    eval_arr = np.asarray(eval_scores, dtype=float)
+    for alpha in alpha_grid:
+        tau = conformal_quantile(list(cal_scores), alpha=alpha)
+        exp = 1.0 - float(alpha)
+        emp = float(np.mean(eval_arr <= tau)) if eval_arr.size > 0 else 0.0
+        expected.append(exp)
+        empirical.append(emp)
+    return expected, empirical
+
+
+def save_coverage_plot(
+    expected: Sequence[float],
+    empirical: Sequence[float],
+    title: str,
+    path: str,
+) -> None:
+    import matplotlib.pyplot as plt
+
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    plt.figure(figsize=(6, 6))
+    plt.plot(expected, empirical, marker="o", linewidth=1.5, label="Empirical")
+    plt.plot([0.0, 1.0], [0.0, 1.0], linestyle="--", linewidth=1.0, label="Ideal y=x")
+    plt.xlim(0.0, 1.0)
+    plt.ylim(0.0, 1.0)
+    plt.xlabel("Expected Coverage (1 - alpha)")
+    plt.ylabel("Empirical Coverage")
+    plt.title(title)
+    plt.grid(alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(path, dpi=180)
+    plt.close()
+
+
 
 def run(args: argparse.Namespace) -> None:
     rows = load_json_or_jsonl(args.input_path)
     if not rows:
         raise RuntimeError(f"No examples found in {args.input_path}")
+    if args.max_rows is not None:
+        rows = rows[: max(int(args.max_rows), 0)]
+    if not rows:
+        raise RuntimeError("No examples left after applying --max_rows.")
 
     n = len(rows)
     n_cal = n if args.n_cal is None else min(args.n_cal, n)
@@ -539,6 +766,8 @@ def run(args: argparse.Namespace) -> None:
     # ---- 1) Calibration: s_i = -R(q_i, p*_i) using SearchResults p* ----
     calib_scores: List[float] = []
     calib_rows: List[Dict[str, Any]] = []
+    retr_eval_scores: List[float] = []
+    eval_start = n_cal if n_cal < n else 0
 
     printed_nonconformity = 0
     for ex in tqdm(calib, desc="Calibrate retrieval NCMs (p* from SearchResults)"):
@@ -586,7 +815,7 @@ def run(args: argparse.Namespace) -> None:
     coverage_total = 0
     c_ret_sizes: List[int] = []
 
-    for ex in tqdm(rows, desc="Build C_ret on (ctxs + SearchResults)"):
+    for ex_idx, ex in enumerate(tqdm(rows, desc="Build C_ret on (ctxs + SearchResults)")):
         q = get_question(ex)
         if not q:
             annotated.append(ex)
@@ -665,6 +894,9 @@ def run(args: argparse.Namespace) -> None:
         if p_star_text and p_star_idx_in_combined is not None:
             coverage_total += 1
             p_star_in_set = bool(combined[p_star_idx_in_combined].get("in_C_ret") is True)
+            p_star_sim = float(combined[p_star_idx_in_combined].get("contriever_sim", 0.0))
+            if ex_idx >= eval_start:
+                retr_eval_scores.append(-p_star_sim)
             if p_star_in_set:
                 coverage_hits += 1
         ex["p_star_in_C_ret"] = p_star_in_set
@@ -703,6 +935,17 @@ def run(args: argparse.Namespace) -> None:
         coverage_total=coverage_total,
     )
     print(f"Saved retriever NCM CSV: {args.retrieval_csv_path}")
+
+    if args.plot_coverage:
+        alpha_grid = np.linspace(0.01, 0.5, num=max(args.coverage_plot_points, 2))
+        retr_expected, retr_empirical = empirical_coverage_curve(calib_scores, retr_eval_scores, alpha_grid)
+        save_coverage_plot(
+            retr_expected,
+            retr_empirical,
+            title="Retriever: Expected vs Empirical Coverage",
+            path=args.retriever_coverage_plot_path,
+        )
+        print(f"Saved retriever coverage plot: {args.retriever_coverage_plot_path}")
 
     # ---- Optional LLM stage (same as before; uses ex['ctxs'] which is now combined) ----
     if args.enable_llm:
@@ -769,6 +1012,34 @@ def run(args: argparse.Namespace) -> None:
         print(f"\nLLM threshold tau_llm (quantile of LLM NCMs): {tau_llm:.6f}")
         print(f"Target LLM guarantee: 1 - alpha_llm = {1 - args.alpha_llm:.3f}")
 
+        llm_eval_scores: List[float] = []
+        if args.plot_coverage:
+            eval_rows = rows[eval_start:] if eval_start > 0 else rows
+            for ex in tqdm(eval_rows, desc="Collect LLM eval NCMs for coverage plot"):
+                q = get_question(ex)
+                golds = get_gold_aliases_norm(ex)
+                p_star_text, _ = pick_p_star_from_searchresults(ex)
+                if not (q and golds and p_star_text):
+                    continue
+                key = cache_key_llm(q, p_star_text, args.M, args.llm_model)
+                if key in llm_cache:
+                    samples = llm_cache[key]["samples"]
+                else:
+                    samples = llm_sample_answers(
+                        client=client,
+                        model=args.llm_model,
+                        question=q,
+                        passage=p_star_text,
+                        M=args.M,
+                        temperature=args.llm_temperature,
+                        max_output_tokens=args.max_output_tokens,
+                        retries=args.retries,
+                        retry_sleep_s=args.retry_sleep_s,
+                        few_shot=few_shot_examples,
+                    )
+                    llm_cache[key] = {"samples": samples}
+                llm_eval_scores.append(llm_example_nonconformity(samples, golds_norm=golds, rouge_thr=args.rouge_thr))
+
         # (B) Build C_llm(q,p) for each p in C_ret(q), then C_agg(q)=union_p C_llm(q,p) and recluster
         pred_rows: List[Dict[str, Any]] = []
         printed_llm_pred = 0
@@ -777,7 +1048,8 @@ def run(args: argparse.Namespace) -> None:
         agg_hits = 0
         agg_total = 0
 
-        for ex in tqdm(annotated, desc="Build C_llm and C_agg"):
+        moncp_records: List[Dict[str, Any]] = []
+        for row_idx, ex in enumerate(tqdm(annotated, desc="Build C_llm and C_agg")):
             q = get_question(ex)
             if not q:
                 continue
@@ -792,6 +1064,11 @@ def run(args: argparse.Namespace) -> None:
             agg_total += 1 if golds else 0
 
             agg_pool: List[str] = []
+            grouped_entry: List[Tuple[str, float, bool]] = []
+            best_conf = 0.0
+            best_ne = 1.0
+            score_i = 0.0
+            any_sample_hit = False
 
             for ctx in ctxs:
                 if ctx.get("in_C_ret") is not True:
@@ -818,6 +1095,20 @@ def run(args: argparse.Namespace) -> None:
                     )
                     llm_cache[key] = {"samples": samples}
 
+                # Build MonCP features from raw sample clusters.
+                clusters = cluster_by_rouge(samples, thr=args.rouge_thr)
+                if clusters:
+                    m = max(len(samples), 1)
+                    c_sizes = [len(c) for c in clusters]
+                    conf = float(max(c_sizes) / m)
+                    ne_ctx = normalized_entropy(c_sizes)
+                    if conf >= best_conf:
+                        best_conf = conf
+                        best_ne = ne_ctx
+                if golds:
+                    if any(any_gold_match(s, golds) for s in samples):
+                        any_sample_hit = True
+
                 # Paper-style conformal LLM prediction set for this (q,p)
                 pred_set = llm_prediction_set(samples, tau_llm=tau_llm, rouge_thr=args.rouge_thr)
                 ctx["llm_pred_set"] = pred_set
@@ -836,6 +1127,11 @@ def run(args: argparse.Namespace) -> None:
                         "prediction_set_json": json.dumps(pred_set, ensure_ascii=False),
                     }
                 )
+                pred_with_scores = llm_prediction_set_with_scores(samples, tau_llm=tau_llm, rouge_thr=args.rouge_thr)
+                for ans_text, conf in pred_with_scores:
+                    gt = bool(golds and any_gold_match(ans_text, golds))
+                    grouped_entry.append((ans_text, float(conf), gt))
+                    score_i = max(score_i, float(conf))
 
                 agg_pool.extend(pred_set)
 
@@ -859,6 +1155,107 @@ def run(args: argparse.Namespace) -> None:
             ex["hit_gold"] = hit
             if golds and hit:
                 agg_hits += 1
+            if args.use_rejection_module:
+                moncp_records.append(
+                    {
+                        "row_idx": row_idx,
+                        "logit": float(best_conf),
+                        "label": int(1 if any_sample_hit else 0),
+                        "grouped_text": grouped_entry,
+                        "score": float(score_i),
+                        "ne": float(best_ne),
+                        "weight": 1.0,
+                    }
+                )
+
+        if args.use_rejection_module:
+            cal_recs = [r for r in moncp_records if r["row_idx"] < n_cal]
+            if not cal_recs:
+                raise RuntimeError("Rejection module requested but no calibration records are available for MonCP.")
+
+            cal_logits = torch.tensor([[1 - r["logit"], r["logit"]] for r in cal_recs], dtype=torch.float32)
+            cal_labels = torch.tensor([r["label"] for r in cal_recs], dtype=torch.long)
+            cal_grouped = [r["grouped_text"] for r in cal_recs]
+            cal_score = [r["score"] for r in cal_recs]
+            cal_ne = [r["ne"] for r in cal_recs]
+            cal_weight = [r["weight"] for r in cal_recs]
+            qs = int(round(float(args.alpha_llm) * 100))
+            _, moncp_a, _ = MonCP_cal(
+                all_logits=cal_logits,
+                labels=cal_labels,
+                ratio=float(np.mean(cal_labels.detach().cpu().numpy())),
+                grouped_text=cal_grouped,
+                score=cal_score,
+                ne=cal_ne,
+                weight=cal_weight,
+                qs=max(qs, 1),
+                use_mlp=args.moncp_mlp,
+                use_weight=args.moncp_weight,
+            )
+
+            all_logits_m = torch.tensor([[1 - r["logit"], r["logit"]] for r in moncp_records], dtype=torch.float32)
+            all_labels_m = torch.tensor([r["label"] for r in moncp_records], dtype=torch.long)
+            all_grouped_m = [r["grouped_text"] for r in moncp_records]
+            all_ne_m = [r["ne"] for r in moncp_records]
+            moncp_ans = MonCP_infer(
+                all_logits=all_logits_m,
+                labels=all_labels_m,
+                grouped_text=all_grouped_m,
+                ne=all_ne_m,
+                a=moncp_a,
+                use_mlp=args.moncp_mlp,
+            )
+
+            for rec, ans_list in zip(moncp_records, moncp_ans):
+                ex = annotated[rec["row_idx"]]
+                dedup: List[str] = []
+                seen = set()
+                for ans, _ in ans_list:
+                    na = norm_text(ans)
+                    if not na:
+                        continue
+                    if na in seen:
+                        continue
+                    dedup.append(ans if ans == "Can't answer" else na)
+                    seen.add(na)
+                ex["C_agg"] = dedup
+                ex["llm_rejection_mode"] = "moncp"
+                ex["llm_rejection_params"] = moncp_a
+
+            # GET THE PREC, REC, F1 metrics for refusals
+            rejections = []
+            labels_true = []
+            for rec in moncp_records:
+                ex = annotated[rec["row_idx"]]
+                c_agg = ex.get("C_agg") or []
+                labels_true.append(rec["label"])  # 1 = answerable, 0 = unanswerable
+                said_cant = any("can't answer" in (a or "").lower() for a in c_agg)
+                rejections.append(said_cant)
+
+            r_refuse, p_refuse, f1_refuse = compute_refusal_metrics(labels_true, rejections)
+            print(f"\n[LLM Rejection Metrics]")
+            print(f"Recall (R_refuse): {r_refuse:.3f}")
+            print(f"Precision (P_refuse): {p_refuse:.3f}")
+            print(f"F1: {f1_refuse:.3f}")
+
+
+            # Recompute metrics after MonCP overwrite.
+            agg_sizes = []
+            agg_hits = 0
+            agg_total = 0
+            for rec in moncp_records:
+                ex = annotated[rec["row_idx"]]
+                golds = get_gold_aliases_norm(ex)
+                c_agg = ex.get("C_agg") or []
+                agg_sizes.append(len(c_agg))
+                if golds:
+                    agg_total += 1
+                    hit = bool(any(any_gold_match(a, golds) for a in c_agg))
+                    ex["hit_gold"] = hit
+                    if hit:
+                        agg_hits += 1
+                else:
+                    ex["hit_gold"] = False
 
         # persist + export
         save_cache(args.llm_cache_path, llm_cache)
@@ -870,6 +1267,17 @@ def run(args: argparse.Namespace) -> None:
         if agg_total > 0:
             print(f"Answer-set coverage (hit_gold via aliases): {agg_hits}/{agg_total} = {agg_hits / agg_total:.3f}")
 
+        if args.plot_coverage:
+            alpha_grid = np.linspace(0.01, 0.5, num=max(args.coverage_plot_points, 2))
+            llm_expected, llm_empirical = empirical_coverage_curve(llm_cal_scores, llm_eval_scores, alpha_grid)
+            save_coverage_plot(
+                llm_expected,
+                llm_empirical,
+                title="LLM: Expected vs Empirical Coverage",
+                path=args.llm_coverage_plot_path,
+            )
+            print(f"Saved LLM coverage plot: {args.llm_coverage_plot_path}")
+
     # ---- Write annotated output ----
     write_jsonl(args.output_path, annotated)
     print(f"\nSaved annotated JSONL: {args.output_path}")
@@ -880,11 +1288,12 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser("TRAQ retriever-set (Contriever + conformal tau_ret) + optional LLM sets")
     p.add_argument("--input_path", type=str, required=True)
     p.add_argument("--output_path", type=str, required=True)
+    p.add_argument("--max_rows", type=int, default=300, help="Use only the first N rows from input")
 
     p.add_argument("--n_cal", type=int, default=None, help="Use this many examples for calibration (default: all)")
     p.add_argument("--alpha_ret", type=float, default=0.1)
-    p.add_argument("--topk_sr", type=int, default=10, help="How many SearchResults to include as candidates")
-    p.add_argument("--topk_ctx", type=int, default=20, help="How many ctxs to include as candidates")
+    p.add_argument("--topk_sr", type=int, default=None, help="How many SearchResults to include as candidates")
+    p.add_argument("--topk_ctx", type=int, default=None, help="How many ctxs to include as candidates")
 
     p.add_argument("--contriever_model", type=str, default="facebook/contriever-msmarco")
     p.add_argument("--device", type=str, default=None)
@@ -892,7 +1301,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max_length", type=int, default=256)
 
     p.add_argument("--enable_llm", action="store_true")
-    p.add_argument("--M", type=int, default=30)
+    p.add_argument("--M", type=int, default=15)
     p.add_argument("--llm_model", type=str, default="gpt-4o-mini")
     p.add_argument("--llm_temperature", type=float, default=1.0)
     p.add_argument("--max_output_tokens", type=int, default=16)
@@ -907,6 +1316,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--retry_sleep_s", type=float, default=0.5)
     p.add_argument("--llm_cache_path", type=str, default="cache_llm_samples.json")
     p.add_argument("--alpha_llm", type=float, default=0.1, help="LLM conformal miscoverage (Bonferroni split with alpha_ret if desired)")
+    p.add_argument("--use_rejection_module", action="store_true", help="Enable LLM rejection module in prediction sets")
+    p.add_argument("--moncp_mlp", action="store_true", help="Use raw logits for MonCP (skip 1-NE adjustment)")
+    p.add_argument("--moncp_weight", action="store_true", help="Use weighted quantiles in MonCP")
+    p.add_argument("--plot_coverage", action="store_true", help="Plot expected vs empirical coverage curves")
+    p.add_argument("--coverage_plot_points", type=int, default=20, help="Number of alpha grid points for coverage plots")
+    p.add_argument("--retriever_coverage_plot_path", type=str, default="retriever_coverage_plot.png")
+    p.add_argument("--llm_coverage_plot_path", type=str, default="llm_coverage_plot.png")
 
     return p
 

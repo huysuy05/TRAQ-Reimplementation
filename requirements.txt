@@ -8,3 +8,4 @@ numpy
 scikit-optimize
 pyyaml
 numpy
+matplotlib
