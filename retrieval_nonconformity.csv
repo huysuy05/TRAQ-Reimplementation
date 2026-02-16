@@ -1,304 +1,204 @@
 question,nonconformity,topk_sr,sim_p_star,num_searchresults,quantile,threshold,retriever_guarantee
-Who was the man behind The Chipmunks?,-1.272271752357483,,1.272271752357483,50,-1.261228,-1.261228,0.900000
-What star sign is Jamie Lee Curtis?,-1.591923713684082,,1.591923713684082,50,-1.261228,-1.261228,0.900000
-Which Lloyd Webber musical premiered in the US on 10th December 1993?,-1.7687911987304688,,1.7687911987304688,49,-1.261228,-1.261228,0.900000
-Who was the next British Prime Minister after Arthur Balfour?,-1.4084926843643188,,1.4084926843643188,47,-1.261228,-1.261228,0.900000
-Who had a 70s No 1 hit with Kiss You All Over?,-1.7296603918075562,,1.7296603918075562,49,-1.261228,-1.261228,0.900000
-What claimed the life of singer Kathleen Ferrier?,-1.7558813095092773,,1.7558813095092773,49,-1.261228,-1.261228,0.900000
-Rita Coolidge sang the title song for which Bond film?,-1.8195981979370117,,1.8195981979370117,44,-1.261228,-1.261228,0.900000
-To the nearest million what is the population of Australia?,-1.4797942638397217,,1.4797942638397217,45,-1.261228,-1.261228,0.900000
-What was the last US state to reintroduce alcohol after prohibition?,-1.4389187097549438,,1.4389187097549438,50,-1.261228,-1.261228,0.900000
-Which actress was voted Miss Greenwich Village in 1942?,-1.5013465881347656,,1.5013465881347656,47,-1.261228,-1.261228,0.900000
-What is the Japanese share index called?,-1.0261132717132568,,1.0261132717132568,43,-1.261228,-1.261228,0.900000
-What was the name of Michael Jackson's autobiography written in 1988?,-1.5900979042053223,,1.5900979042053223,50,-1.261228,-1.261228,0.900000
-In which decade did stereo records first go on sale?,-1.150181531906128,,1.150181531906128,48,-1.261228,-1.261228,0.900000
-What was golfing great Ben Hogan's famous reply when he was asked how to improve one's game?,-1.4991958141326904,,1.4991958141326904,50,-1.261228,-1.261228,0.900000
-In what year's Olympics were electric timing devices and a public-address system used for the first time?,-1.7634656429290771,,1.7634656429290771,43,-1.261228,-1.261228,0.900000
-Why is the site of a boxing match called a ring when it's square?,-1.768775224685669,,1.768775224685669,27,-1.261228,-1.261228,0.900000
-"In the very first Boston Marathon, 15 runners competed. How many finished?",-1.56818425655365,,1.56818425655365,46,-1.261228,-1.261228,0.900000
-"""How many different animal shapes are there in the """"Animal Crackers"""" cookie zoo?""",-1.6285314559936523,,1.6285314559936523,35,-1.261228,-1.261228,0.900000
-Which volcano in Tanzania is the highest mountain in Africa?,-1.6442971229553223,,1.6442971229553223,47,-1.261228,-1.261228,0.900000
-The flag of Libya is a plain rectangle of which color?,-2.01904559135437,,2.01904559135437,47,-1.261228,-1.261228,0.900000
-Of which African country is Niamey the capital?,-1.678889274597168,,1.678889274597168,46,-1.261228,-1.261228,0.900000
-Who was the director of the CIA from 1976-81?,-1.5006048679351807,,1.5006048679351807,45,-1.261228,-1.261228,0.900000
-Which musical featured the song The Street Where You Live?,-1.536144495010376,,1.536144495010376,49,-1.261228,-1.261228,0.900000
-"""Who was the target of the failed """"Bomb Plot"""" of 1944?""",-1.5223718881607056,,1.5223718881607056,49,-1.261228,-1.261228,0.900000
-Who had an 80s No 1 hit with Hold On To The Nights?,-1.8104074001312256,,1.8104074001312256,47,-1.261228,-1.261228,0.900000
-Who directed the classic 30s western Stagecoach?,-1.5930089950561523,,1.5930089950561523,49,-1.261228,-1.261228,0.900000
-Dave Gilmore and Roger Waters were in which rock group?,-1.5208208560943604,,1.5208208560943604,50,-1.261228,-1.261228,0.900000
-Which highway was Revisited in a classic 60s album by Bob Dylan?,-1.8091554641723633,,1.8091554641723633,50,-1.261228,-1.261228,0.900000
-Which was the only eastern bloc country to participate in the 1984 LA Olympics?,-1.5329934358596802,,1.5329934358596802,42,-1.261228,-1.261228,0.900000
-Which 90s sci fi series with James Belushi was based on Bruce Wagner's comic strip of the same name?,-1.5867178440093994,,1.5867178440093994,46,-1.261228,-1.261228,0.900000
-If I Were A Rich Man Was a big hit from which stage show?,-1.511189341545105,,1.511189341545105,50,-1.261228,-1.261228,0.900000
-Men Against the Sea and Pitcairn's Island were two sequels to what famous novel?,-1.6826435327529907,,1.6826435327529907,49,-1.261228,-1.261228,0.900000
-What is the only novel to top the best-seller lists for two consecutive years?,-1.3559951782226562,,1.3559951782226562,49,-1.261228,-1.261228,0.900000
-"To whom did Helen Keller dedicate her autobiography, The Story of My Life?",-2.0749309062957764,,2.0749309062957764,37,-1.261228,-1.261228,0.900000
-"""Complete this Biblical quotation: """"It is easier for a camel to go through the eye of a needle, than...""",-2.157165050506592,,2.157165050506592,27,-1.261228,-1.261228,0.900000
-What was Truman Capote's last name before he was adopted by his stepfather?,-1.7692610025405884,,1.7692610025405884,45,-1.261228,-1.261228,0.900000
-What book knocked Henry Kissinger's White house Years out of first place on the best-seller list in November 1979?,-0.8956636190414429,,0.8956636190414429,6,-1.261228,-1.261228,0.900000
-"In Lewis Carroll's poem The Hunting of the Snark, what did the elusive, troublesome snark turn into to fool hunters?",-0.737183690071106,,0.737183690071106,1,-1.261228,-1.261228,0.900000
-In what state was playwright Tennessee Williams born?,-1.5381827354431152,,1.5381827354431152,50,-1.261228,-1.261228,0.900000
-Who was the only Englishman to become Pope?,-1.4430418014526367,,1.4430418014526367,39,-1.261228,-1.261228,0.900000
-"In the Bible, who did the sun and moon stand still before?",-1.6020101308822632,,1.6020101308822632,44,-1.261228,-1.261228,0.900000
-What Michelle Pfeiffer movie got a boost from the Coolio song Gangsta's Paradise?,-1.8175946474075317,,1.8175946474075317,48,-1.261228,-1.261228,0.900000
-"In the Bible, who saw the handwriting on the wall?",-1.4534075260162354,,1.4534075260162354,46,-1.261228,-1.261228,0.900000
-What comic strip character was named after heavyweight boxing champion James J. Jeffries?,-1.6670490503311157,,1.6670490503311157,45,-1.261228,-1.261228,0.900000
-What was President Gerald Ford's middle name?,-1.6348766088485718,,1.6348766088485718,45,-1.261228,-1.261228,0.900000
-Who recorded the When Harry Met Sally soundtrack?,-1.7227585315704346,,1.7227585315704346,45,-1.261228,-1.261228,0.900000
-Art Garfunkel trained for which profession although he didn't qualify?,-1.4914578199386597,,1.4914578199386597,47,-1.261228,-1.261228,0.900000
-Who was the last inmate of Spandau jail in Berlin?,-1.6056801080703735,,1.6056801080703735,47,-1.261228,-1.261228,0.900000
-What was Eddie Murphy's first movie?,-1.4570921659469604,,1.4570921659469604,47,-1.261228,-1.261228,0.900000
-In the 80s who wrote the novel Empire of The Sun?,-1.6994318962097168,,1.6994318962097168,50,-1.261228,-1.261228,0.900000
-Kagoshima international airport is in which country?,-1.6186473369598389,,1.6186473369598389,50,-1.261228,-1.261228,0.900000
-In which sport could the Pacers take on the Pistons?,-1.4083640575408936,,1.4083640575408936,50,-1.261228,-1.261228,0.900000
-Kim Carnes' nine weeks at No 1 with Bette Davis Eyes was interrupted for one week by which song?,-2.256258487701416,,2.256258487701416,44,-1.261228,-1.261228,0.900000
-Where in Canada is the Lion's Gate bridge?,-1.5658257007598877,,1.5658257007598877,49,-1.261228,-1.261228,0.900000
-What was Walter Matthau's first movie?,-1.5568691492080688,,1.5568691492080688,49,-1.261228,-1.261228,0.900000
-Otis Barton was a pioneer in exploring where?,-1.793409824371338,,1.793409824371338,45,-1.261228,-1.261228,0.900000
-Where in England was actor Nigel Hawthorne born?,-1.9310766458511353,,1.9310766458511353,50,-1.261228,-1.261228,0.900000
-What would Kevin Scale have been called if it had adopted the originator's first name?,-0.9617794752120972,,0.9617794752120972,48,-1.261228,-1.261228,0.900000
-"What mythological beast has the head of a man, the body of a lion, and the tail and feet of a dragon?",-1.2312371730804443,,1.2312371730804443,41,-1.261228,-1.261228,0.900000
-"In Greek mythology, who were Arges, Brontes and Steropes?",-1.9514747858047485,,1.9514747858047485,45,-1.261228,-1.261228,0.900000
-"In Greek mythology, what were the names of Oedipus's parents?",-1.6915936470031738,,1.6915936470031738,24,-1.261228,-1.261228,0.900000
-Which musician founded the Red Hot Peppers?,-1.2646427154541016,,1.2646427154541016,50,-1.261228,-1.261228,0.900000
-Where did the Shinning Path terrorists operate?,-0.9260799884796143,,0.9260799884796143,50,-1.261228,-1.261228,0.900000
-How old was Jimi Hendrix when he died?,-1.4630846977233887,,1.4630846977233887,46,-1.261228,-1.261228,0.900000
-Which Brit broke the land speed record in 1990 in Thrust 2?,-1.5847182273864746,,1.5847182273864746,45,-1.261228,-1.261228,0.900000
-In which state was Gene Vincent born?,-1.8645304441452026,,1.8645304441452026,50,-1.261228,-1.261228,0.900000
-How was the European Recovery Program in the 1940s more commonly known?,-1.6525688171386719,,1.6525688171386719,47,-1.261228,-1.261228,0.900000
-Brandon Lee died during the making of which movie?,-1.6491365432739258,,1.6491365432739258,44,-1.261228,-1.261228,0.900000
-Who had a 70s No 1 hit with Let's Do It Again?,-1.9102133512496948,,1.9102133512496948,47,-1.261228,-1.261228,0.900000
-Who had a Too Legit To Quit Tour?,-1.531111717224121,,1.531111717224121,49,-1.261228,-1.261228,0.900000
-"""According to Rudyard Kipling what were the """"two imposters"""" to meet and treat the same day?""",-1.4027642011642456,,1.4027642011642456,45,-1.261228,-1.261228,0.900000
-Who is the most successful UK solo artist in the USA?,-1.3238712549209595,,1.3238712549209595,46,-1.261228,-1.261228,0.900000
-Where was horse racing's Breeder's Cup held in 1987?,-1.5727643966674805,,1.5727643966674805,32,-1.261228,-1.261228,0.900000
-Which country does the airline TAAG come from?,-1.4797165393829346,,1.4797165393829346,47,-1.261228,-1.261228,0.900000
-Which US No 1 single came from Diana Ross's platinum album Diana?,-1.6251263618469238,,1.6251263618469238,49,-1.261228,-1.261228,0.900000
-River Phoenix died during the making of which movie?,-1.7868287563323975,,1.7868287563323975,49,-1.261228,-1.261228,0.900000
-Which artist David was born in Bradford UK?,-1.620384931564331,,1.620384931564331,47,-1.261228,-1.261228,0.900000
-What is Mel Gibson's middle name?,-1.562129020690918,,1.562129020690918,45,-1.261228,-1.261228,0.900000
-Richard Daley was mayor of which city for 21 years?,-2.0271332263946533,,2.0271332263946533,50,-1.261228,-1.261228,0.900000
-"""In which movie did Garbo say, """"I want to be alone"""".""",-1.7454843521118164,,1.7454843521118164,47,-1.261228,-1.261228,0.900000
-Robert Kirkpatrick of California grew the world's biggest what?,-0.9126554727554321,,0.9126554727554321,49,-1.261228,-1.261228,0.900000
-What is Osbert Lancaster best known for producing?,-1.8120663166046143,,1.8120663166046143,50,-1.261228,-1.261228,0.900000
-Who was the defending champion when Martina Navratilova first won Wimbledon singles?,-1.8835248947143555,,1.8835248947143555,48,-1.261228,-1.261228,0.900000
-Who was the first US-born winner of golf's British Open?,-1.800989031791687,,1.800989031791687,49,-1.261228,-1.261228,0.900000
-In which country is the Sky Train Rail bridge?,-1.3856909275054932,,1.3856909275054932,50,-1.261228,-1.261228,0.900000
-What was the Paramount Film Company originally called?,-1.281436800956726,,1.281436800956726,48,-1.261228,-1.261228,0.900000
-Which founder of the company Triad was accused by the USA of receiving bribes?,-1.234500765800476,,1.234500765800476,46,-1.261228,-1.261228,0.900000
-Who was the first person after Scott to reach the South Pole overland?,-1.6324491500854492,,1.6324491500854492,44,-1.261228,-1.261228,0.900000
-Which journalist first told the world about the My Lai massacre?,-1.739896535873413,,1.739896535873413,49,-1.261228,-1.261228,0.900000
-What is the name of Terence and Shirley Conran's dress designer son?,-1.9319055080413818,,1.9319055080413818,47,-1.261228,-1.261228,0.900000
-Which drink did The Spice Girls promote?,-1.4591026306152344,,1.4591026306152344,49,-1.261228,-1.261228,0.900000
-Who was the youngest brother in the Beach Boys?,-1.433383822441101,,1.433383822441101,49,-1.261228,-1.261228,0.900000
-Which actress was called by the US Senate a 'powerful force of evil' when she left her husband and child in 1948?,-0.9825335144996643,,0.9825335144996643,44,-1.261228,-1.261228,0.900000
-Who first hosted Family Feud?,-1.5598998069763184,,1.5598998069763184,44,-1.261228,-1.261228,0.900000
-What did the Lone Ranger's title Kemo Sabe mean in Apache?,-2.05734920501709,,2.05734920501709,39,-1.261228,-1.261228,0.900000
-Who or what was Gentle Ben in the 60s TV series?,-1.874204397201538,,1.874204397201538,50,-1.261228,-1.261228,0.900000
-Which 70s show was based on the British show Till Death Us Do Part?,-1.4359291791915894,,1.4359291791915894,45,-1.261228,-1.261228,0.900000
-On what date in 1969 did Neil Armstrong first set foot on the Moon?,-1.7590150833129883,,1.7590150833129883,48,-1.261228,-1.261228,0.900000
-Bandar Seri Begawan International airport is in which country?,-1.6932847499847412,,1.6932847499847412,50,-1.261228,-1.261228,0.900000
-What was the profession of Paul Strand (1890 - 1976)?,-1.6325182914733887,,1.6325182914733887,50,-1.261228,-1.261228,0.900000
-"""Which supermodel said, """"I look very scary in the mornings?""",-1.081568717956543,,1.081568717956543,48,-1.261228,-1.261228,0.900000
-Who wrote the song MacArthur Park?,-1.7324576377868652,,1.7324576377868652,47,-1.261228,-1.261228,0.900000
-Who had a 60s No 1 with Downtown?,-1.2532658576965332,,1.2532658576965332,50,-1.261228,-1.261228,0.900000
-"Who was born first, Kiefer Sutherland or Christian Slater?",-1.7039908170700073,,1.7039908170700073,45,-1.261228,-1.261228,0.900000
-"To the nearest two, how many tennis Grand Slam titles did Jimmy Connors win?",-1.8138740062713623,,1.8138740062713623,43,-1.261228,-1.261228,0.900000
-Who was the Georgia Peach?,-1.4582691192626953,,1.4582691192626953,50,-1.261228,-1.261228,0.900000
-Who set fire to his guitar at the Monterey Pop festival in 19676?,-1.9658931493759155,,1.9658931493759155,48,-1.261228,-1.261228,0.900000
-Della Street was whose secretary?,-1.814758539199829,,1.814758539199829,45,-1.261228,-1.261228,0.900000
-"In music, who was Sweet and Innocent and Too Young?",-1.6297783851623535,,1.6297783851623535,41,-1.261228,-1.261228,0.900000
-Who is featured on Puff Daddy's Can't Hold Me Down?,-1.945940613746643,,1.945940613746643,50,-1.261228,-1.261228,0.900000
-What had Edmond Hillary worked at before taking up mountain climbing?,-1.3970426321029663,,1.3970426321029663,47,-1.261228,-1.261228,0.900000
-In which American state is the Isabella Stewart Gardner Museum?,-1.6456955671310425,,1.6456955671310425,50,-1.261228,-1.261228,0.900000
-Benina international airport is in which country?,-1.7406240701675415,,1.7406240701675415,50,-1.261228,-1.261228,0.900000
-"In 1986, which TV station sponsored the world's biggest wine tasting?",-1.2667765617370605,,1.2667765617370605,49,-1.261228,-1.261228,0.900000
-"To a thousand, what is the area of Illinois in square miles?",-1.5479936599731445,,1.5479936599731445,46,-1.261228,-1.261228,0.900000
-Beloved in 1999 was whose first movie since The Color Purple in 1985?,-1.3994905948638916,,1.3994905948638916,49,-1.261228,-1.261228,0.900000
-Which Star Trek star directed Three Men and a Baby?,-1.530192255973816,,1.530192255973816,49,-1.261228,-1.261228,0.900000
-Which sitcom star appeared on the big screening The Object of My Affection?,-1.5127649307250977,,1.5127649307250977,48,-1.261228,-1.261228,0.900000
-"""Which character did Julia """"Roberts play in Steven Spielberg's Hook?""",-1.8120043277740479,,1.8120043277740479,45,-1.261228,-1.261228,0.900000
-Which US president did Anthony Hopkins play in a film whose title was simply his name?,-1.428045630455017,,1.428045630455017,40,-1.261228,-1.261228,0.900000
-Which movie was a biopic about the life of David Helfgott?,-1.5858327150344849,,1.5858327150344849,50,-1.261228,-1.261228,0.900000
-Which film director guested as the FBI Director in The Silence of the Lambs?,-1.6322497129440308,,1.6322497129440308,48,-1.261228,-1.261228,0.900000
-In which sci fi classic did the space ship Nostromo first appear?,-1.5398530960083008,,1.5398530960083008,49,-1.261228,-1.261228,0.900000
-Nigel Hawthorne was Oscar nominated for The Madness of which King?,-2.0055155754089355,,2.0055155754089355,49,-1.261228,-1.261228,0.900000
-Which Swedish actress won the Best Supporting Actress Oscar for Murder on the Orient Express?,-1.9825929403305054,,1.9825929403305054,49,-1.261228,-1.261228,0.900000
-Which Oscar-nominated film had You Sexy Thing as its theme song?,-1.619340419769287,,1.619340419769287,45,-1.261228,-1.261228,0.900000
-Which Joan's career revived in Whatever Happened to Baby Jane?,-1.6726315021514893,,1.6726315021514893,50,-1.261228,-1.261228,0.900000
-Which much-loved actor won the Best Actor Oscar for The Philadelphia Story?,-1.6234526634216309,,1.6234526634216309,41,-1.261228,-1.261228,0.900000
-Which legendary dancer was Oscar-nominated for The Towering Inferno?,-1.499492883682251,,1.499492883682251,46,-1.261228,-1.261228,0.900000
-What was the name of the brothel in The Best Little Whorehouse in Texas?,-1.8279304504394531,,1.8279304504394531,49,-1.261228,-1.261228,0.900000
-Who was the male star of the movie The Man of La Mancha?,-1.566778540611267,,1.566778540611267,50,-1.261228,-1.261228,0.900000
-What relation is Joey Richardson to Vanessa Redgrave?,-1.5566117763519287,,1.5566117763519287,43,-1.261228,-1.261228,0.900000
-Melanie Molitor is the mom of which tennis world NO 1?,-1.8959484100341797,,1.8959484100341797,50,-1.261228,-1.261228,0.900000
-Marc Dutroux hit the headlines over a 'house of horrors' in which country?,-1.585196852684021,,1.585196852684021,45,-1.261228,-1.261228,0.900000
-On which date in 1945 did Hitler take cyanide then shoot himself?,-1.7368284463882446,,1.7368284463882446,42,-1.261228,-1.261228,0.900000
-How old would Elvis Presley have been had he lived to the end of the 20th century?,-1.3603101968765259,,1.3603101968765259,50,-1.261228,-1.261228,0.900000
-In which river is the Boulder Dam?,-1.0292243957519531,,1.0292243957519531,50,-1.261228,-1.261228,0.900000
-"Which sports event was first held at Worcester, Massachusetts in 1927?",-1.3872551918029785,,1.3872551918029785,49,-1.261228,-1.261228,0.900000
-In which European city is the Belvederen Gallery?,-1.6535412073135376,,1.6535412073135376,49,-1.261228,-1.261228,0.900000
-How old was Woody Herman when he founded his own orchestra?,-1.6883876323699951,,1.6883876323699951,49,-1.261228,-1.261228,0.900000
-For which movie did Katharine Hepburn win her second Oscar?,-1.6020488739013672,,1.6020488739013672,46,-1.261228,-1.261228,0.900000
-Who had a 60s No 1 hit with This Diamond Ring?,-1.2544682025909424,,1.2544682025909424,49,-1.261228,-1.261228,0.900000
-The world was first aware of the Chernobyl disaster after detectors were triggered at a nuclear plant in which country?,-1.475685954093933,,1.475685954093933,46,-1.261228,-1.261228,0.900000
-In which country was the first permanent bungee jumping site situated?,-1.9208052158355713,,1.9208052158355713,46,-1.261228,-1.261228,0.900000
-Who succeeded Brezhnev as Soviet premier?,-1.7568681240081787,,1.7568681240081787,43,-1.261228,-1.261228,0.900000
-In the late 60s Owen Finlay MacLaren pioneered what useful item for parents of small chldren?,-0.7881675362586975,,0.7881675362586975,45,-1.261228,-1.261228,0.900000
-In which city's shipyard was Solidarity set up?,-1.6080667972564697,,1.6080667972564697,49,-1.261228,-1.261228,0.900000
-What was the first spacecraft to land on another planet?,-1.621600866317749,,1.621600866317749,45,-1.261228,-1.261228,0.900000
-Which female singer was born on exactly the same day as impressionist Rich Little?,-1.3543479442596436,,1.3543479442596436,46,-1.261228,-1.261228,0.900000
-What is Harrison Ford's real name?,-1.5179145336151123,,1.5179145336151123,45,-1.261228,-1.261228,0.900000
-Who's home runs record did Mark McGwire break in the 1998 season?,-1.8236958980560303,,1.8236958980560303,43,-1.261228,-1.261228,0.900000
-What were Joe DiMaggio's two baseball-playing brothers called?,-1.8145807981491089,,1.8145807981491089,25,-1.261228,-1.261228,0.900000
-Who won baseball's first World Series of the 80s?,-1.4063897132873535,,1.4063897132873535,47,-1.261228,-1.261228,0.900000
-What was Pete Sampras seeded when he won his first US Open?,-1.570839762687683,,1.570839762687683,46,-1.261228,-1.261228,0.900000
-"""Which boxer famously said,"""" If I can't beat this bum take my name off the record books?""""""",-1.5377423763275146,,1.5377423763275146,48,-1.261228,-1.261228,0.900000
-Where did Jonathan Edwards set his 1995 triple jump world record?,-2.19647216796875,,2.19647216796875,46,-1.261228,-1.261228,0.900000
-"In baseball, where do the Orioles come from?",-1.2939038276672363,,1.2939038276672363,49,-1.261228,-1.261228,0.900000
-The Naismith Award is presented in which sport?,-1.5854988098144531,,1.5854988098144531,49,-1.261228,-1.261228,0.900000
-Which cartoon and film character is the nickname of super athlete Michael Johnson?,-1.588059425354004,,1.588059425354004,47,-1.261228,-1.261228,0.900000
-For which team did Babe Ruth blast his last Major League home run?,-1.6610355377197266,,1.6610355377197266,46,-1.261228,-1.261228,0.900000
-How old would Bobby Kennedy have been had he lived to the end of the 20th century?,-1.353021502494812,,1.353021502494812,47,-1.261228,-1.261228,0.900000
-What was Warren Beatty's first movie?,-1.6089959144592285,,1.6089959144592285,49,-1.261228,-1.261228,0.900000
-Where does Roseanne have a tattoo of a pink rose?,-1.2655013799667358,,1.2655013799667358,46,-1.261228,-1.261228,0.900000
-"Which future Hollywood star got her break as Wonder Girl, Wonder Woman's sister Drusilla?",-1.917555809020996,,1.917555809020996,46,-1.261228,-1.261228,0.900000
-Mickey Braddock in the 50s series Circus Boy found fame with which surname in which pop band?,-2.0623998641967773,,2.0623998641967773,41,-1.261228,-1.261228,0.900000
-Which war veteran was Director of News & Special Events for ABC before find fame as a TV cop?,-0.9935784339904785,,0.9935784339904785,48,-1.261228,-1.261228,0.900000
-What US sitcom was the first exported to Britain?,-1.954708456993103,,1.954708456993103,48,-1.261228,-1.261228,0.900000
-In Hanna and Barbera's TV cartoons base on The Addams Family who was the voice of Gomez?,-1.4623925685882568,,1.4623925685882568,48,-1.261228,-1.261228,0.900000
-Who was the only female victim to be killed off in the opening credit sequence in Police Squad?,-1.5455849170684814,,1.5455849170684814,48,-1.261228,-1.261228,0.900000
-In 1990 who faced banners saying Goodbye Pineapple Face?,-1.3067759275436401,,1.3067759275436401,46,-1.261228,-1.261228,0.900000
-How much did Clint Eastwood receive per month for his duties as Mayor of Carmel?,-1.2123832702636719,,1.2123832702636719,46,-1.261228,-1.261228,0.900000
-Which US president won the Nobel Peace Prize in 1920?,-1.5315048694610596,,1.5315048694610596,43,-1.261228,-1.261228,0.900000
-Who beat Tim Henman in his first Wimbledon singles semifinal?,-1.829723596572876,,1.829723596572876,47,-1.261228,-1.261228,0.900000
-What relation was Flo Jo to Jackie Joyner Kersee?,-1.7079110145568848,,1.7079110145568848,47,-1.261228,-1.261228,0.900000
-How long was swimmer Michelle Smith-de Bruin banned for attempting to manipulate a drugs test?,-2.130861282348633,,2.130861282348633,42,-1.261228,-1.261228,0.900000
-Yuan Yuan was caught carrying drugs for which Chinese team?,-1.7511396408081055,,1.7511396408081055,50,-1.261228,-1.261228,0.900000
-Which grand slam did Pete Sampras not win in the 20th century?,-1.7138856649398804,,1.7138856649398804,45,-1.261228,-1.261228,0.900000
-In which events did Gert Fredriksson win six Olympic gold medals?,-1.957714319229126,,1.957714319229126,41,-1.261228,-1.261228,0.900000
-"How many of his 45 races did Mike Hawthorn, a former Formula One motor racing world champion, win?",-1.8556981086730957,,1.8556981086730957,42,-1.261228,-1.261228,0.900000
-On the Internet what is Spam?,-1.5910327434539795,,1.5910327434539795,50,-1.261228,-1.261228,0.900000
-In which country did the Internet start?,-1.5097057819366455,,1.5097057819366455,48,-1.261228,-1.261228,0.900000
-In which year was the Juilliard School founded in New York?,-1.7901723384857178,,1.7901723384857178,50,-1.261228,-1.261228,0.900000
-Where was horse racing's Breeders' Cup held in 1989?,-1.711634874343872,,1.711634874343872,49,-1.261228,-1.261228,0.900000
-"Who wrote My Life and Loves in 1926, originally banned in the US?",-1.2098441123962402,,1.2098441123962402,48,-1.261228,-1.261228,0.900000
-What was Blondie's last UK No 1 of the 80s?,-1.8640732765197754,,1.8640732765197754,50,-1.261228,-1.261228,0.900000
-"If it is 3 a.m. in Nevada, what time is it in Montana?",-1.2063037157058716,,1.2063037157058716,50,-1.261228,-1.261228,0.900000
-"In baseball, where do the Royals come from?",-1.3334797620773315,,1.3334797620773315,47,-1.261228,-1.261228,0.900000
-What is the largest city in Ohio?,-1.5473058223724365,,1.5473058223724365,46,-1.261228,-1.261228,0.900000
-In which decade of the 20th century was Anne Bancroft born?,-1.6512959003448486,,1.6512959003448486,50,-1.261228,-1.261228,0.900000
-The Suez Canal connects the Mediterranean Sea to which other Sea?,-1.7352626323699951,,1.7352626323699951,40,-1.261228,-1.261228,0.900000
-Vehicles from which country use the international registration letter E?,-1.3673253059387207,,1.3673253059387207,48,-1.261228,-1.261228,0.900000
-Which rock star did Cindy Crawford name her first son after?,-1.6952040195465088,,1.6952040195465088,49,-1.261228,-1.261228,0.900000
-Sun Yat Sen overthrew the emperor in which country establishing a republic after 2000 years of imperial rule?,-1.6044750213623047,,1.6044750213623047,41,-1.261228,-1.261228,0.900000
-Who designed the dress which made the most at Diana's dress auction?,-1.644918441772461,,1.644918441772461,50,-1.261228,-1.261228,0.900000
-Which Palestinian co-founded al Fatah in 1957?,-1.7037255764007568,,1.7037255764007568,45,-1.261228,-1.261228,0.900000
-In which country was Earl Spencer's acrimonious divorce settlement heard?,-1.7911791801452637,,1.7911791801452637,46,-1.261228,-1.261228,0.900000
-"In which North African country was Mohammed Al-Fayed, owner of Harrods department store in London, born?",-1.9184386730194092,,1.9184386730194092,46,-1.261228,-1.261228,0.900000
-Aung San Suu Kyi is a controversial leader in which country?,-1.404073715209961,,1.404073715209961,50,-1.261228,-1.261228,0.900000
-Which of the founders of United Artists had the last name nearest the beginning of the alphabet?,-1.0198317766189575,,1.0198317766189575,44,-1.261228,-1.261228,0.900000
-"In La Cage Aux Folles, what was La Cage Aux Folles?",-1.7358227968215942,,1.7358227968215942,50,-1.261228,-1.261228,0.900000
-Where was the Fiddler in the musical's title?,-1.4275981187820435,,1.4275981187820435,47,-1.261228,-1.261228,0.900000
-South Pacific was set during which war?,-1.6437674760818481,,1.6437674760818481,48,-1.261228,-1.261228,0.900000
-What percentage of the earth's surface is covered by Europe?,-1.4323840141296387,,1.4323840141296387,45,-1.261228,-1.261228,0.900000
-Which European town gave its name to a Treaty which symbolizes closer economic links between European countries?,-1.156416893005371,,1.156416893005371,43,-1.261228,-1.261228,0.900000
-Which home of champagne in France was also where the German High Command surrendered in WWII?,-1.3075964450836182,,1.3075964450836182,45,-1.261228,-1.261228,0.900000
-Which was the first European city this century to open an underground railway system?,-1.5032217502593994,,1.5032217502593994,49,-1.261228,-1.261228,0.900000
-Who first drew Mickey Mouse when ?Disney first supplied the voice?,-1.597463846206665,,1.597463846206665,46,-1.261228,-1.261228,0.900000
-Which actress wrote the novel The Last of the Really Great Whangdoodles?,-1.8715362548828125,,1.8715362548828125,47,-1.261228,-1.261228,0.900000
-Who was the star of the film based on the record Harper Valley PTA by Jeannie C Riley?,-2.0640382766723633,,2.0640382766723633,47,-1.261228,-1.261228,0.900000
-What color golf balls are used on the golf course in Antarctica?,-1.4656877517700195,,1.4656877517700195,48,-1.261228,-1.261228,0.900000
-Throughout the 80s and 90s Phil Collins recorded on which record label?,-1.2603998184204102,,1.2603998184204102,48,-1.261228,-1.261228,0.900000
-On which label did Chuck Berry record in the 1950s and 1960s?,-1.7023602724075317,,1.7023602724075317,44,-1.261228,-1.261228,0.900000
-Which museum has the highest-funded art gallery?,-1.1745179891586304,,1.1745179891586304,50,-1.261228,-1.261228,0.900000
-What was the name of Michael Jackson's second wife?,-1.6342260837554932,,1.6342260837554932,47,-1.261228,-1.261228,0.900000
-Which US city was named after a British Prime Minister?,-1.2375009059906006,,1.2375009059906006,42,-1.261228,-1.261228,0.900000
-"""Who said, To err is human but it feels divine?""""""",-1.6400237083435059,,1.6400237083435059,44,-1.261228,-1.261228,0.900000
-Which singer had a big 60s No 1 with Roses Are Red?,-1.079972267150879,,1.079972267150879,49,-1.261228,-1.261228,0.900000
-What are the international registration letters of a vehicle from Iceland?,-1.4708863496780396,,1.4708863496780396,43,-1.261228,-1.261228,0.900000
-Where was the American venue of the Live Aid concert?,-1.5609372854232788,,1.5609372854232788,49,-1.261228,-1.261228,0.900000
-Which was the longest moon landing?,-1.217785358428955,,1.217785358428955,47,-1.261228,-1.261228,0.900000
-Who had the most expensive presidential inauguration ceremony of the 20th century?,-1.4847136735916138,,1.4847136735916138,46,-1.261228,-1.261228,0.900000
-Who became Israel's head of state in 1993?,-1.5739667415618896,,1.5739667415618896,50,-1.261228,-1.261228,0.900000
-"In WWII, who was the head of the Nazi party's security service?",-1.5279371738433838,,1.5279371738433838,47,-1.261228,-1.261228,0.900000
-Which President of the Philippines was deposed in 1986?,-1.7111690044403076,,1.7111690044403076,46,-1.261228,-1.261228,0.900000
-"What kind of disaster claimed some 100,000 lives in Armenia in 1988?",-1.8764185905456543,,1.8764185905456543,48,-1.261228,-1.261228,0.900000
-Which state on the Gulf of Mexico is nearest the end of the alphabet?,-1.856194257736206,,1.856194257736206,48,-1.261228,-1.261228,0.900000
-"To ten thousand square miles, what is the area of Michigan?",-1.880043387413025,,1.880043387413025,45,-1.261228,-1.261228,0.900000
-Truax Field international airport is in which US state?,-1.7884591817855835,,1.7884591817855835,50,-1.261228,-1.261228,0.900000
-In what month was the attack on Pearl Harbor?,-1.4927973747253418,,1.4927973747253418,47,-1.261228,-1.261228,0.900000
-Who did Dr. Crippen murder?,-1.7353366613388062,,1.7353366613388062,49,-1.261228,-1.261228,0.900000
-"In the 1904 Olympics, how many of the 23 track and field titles were won by Americans?",-2.024899959564209,,2.024899959564209,45,-1.261228,-1.261228,0.900000
-The Black Hills lie between which two rivers?,-1.7578394412994385,,1.7578394412994385,48,-1.261228,-1.261228,0.900000
-In what year was the first in-flight movie shown on an internal flight in the USA.,-1.6279122829437256,,1.6279122829437256,46,-1.261228,-1.261228,0.900000
-In which city was John Lennon murdered?,-1.5229161977767944,,1.5229161977767944,47,-1.261228,-1.261228,0.900000
-How was President Kennedy assassinated?,-1.5530245304107666,,1.5530245304107666,50,-1.261228,-1.261228,0.900000
-Which caped crusader operated in Gotham City?,-1.5127744674682617,,1.5127744674682617,48,-1.261228,-1.261228,0.900000
-Who did Jack Ruby shoot in November 1963?,-1.7188012599945068,,1.7188012599945068,48,-1.261228,-1.261228,0.900000
-Who was the first American to travel faster than the speed of sound?,-1.5098471641540527,,1.5098471641540527,46,-1.261228,-1.261228,0.900000
-Who was the first US president Barbara Walters interviewed?,-1.6811763048171997,,1.6811763048171997,49,-1.261228,-1.261228,0.900000
-Which orchestral conductor was married to one of the subjects of the film Hillary and Jackie?,-1.1984142065048218,,1.1984142065048218,49,-1.261228,-1.261228,0.900000
-Which writer and politician became Lord Tweedsmuir?,-1.7196861505508423,,1.7196861505508423,47,-1.261228,-1.261228,0.900000
-In what year was the first Tarzan novel published?,-1.66697359085083,,1.66697359085083,50,-1.261228,-1.261228,0.900000
-In which country were motorized ambulances first used?,-1.6260859966278076,,1.6260859966278076,48,-1.261228,-1.261228,0.900000
-In which city was the first Model T produced outside the USA?,-1.9010512828826904,,1.9010512828826904,49,-1.261228,-1.261228,0.900000
-What is the Pacific terminus of the Trans Siberian Railway?,-1.5898489952087402,,1.5898489952087402,48,-1.261228,-1.261228,0.900000
-What appears in the middle of the Rwandan flag?,-1.4169714450836182,,1.4169714450836182,41,-1.261228,-1.261228,0.900000
-What is the name of the mountain pass which lies between Pakistan and Afghanistan?,-1.36246657371521,,1.36246657371521,45,-1.261228,-1.261228,0.900000
-"What is the name of the group of 1,196 islands in the North Indian Ocean, none bigger than five square miles?",-1.5503289699554443,,1.5503289699554443,43,-1.261228,-1.261228,0.900000
-Which Syrian city is said to be the oldest continually inhabited city in the world?,-1.8339812755584717,,1.8339812755584717,46,-1.261228,-1.261228,0.900000
-Who was king of France at the time of the French Revolution?,-1.261228322982788,,1.261228322982788,48,-1.261228,-1.261228,0.900000
-What is the principal language of Bulgaria?,-1.5006749629974365,,1.5006749629974365,48,-1.261228,-1.261228,0.900000
-"What is the name of the cathedral in Red Square, Moscow?",-1.3467655181884766,,1.3467655181884766,47,-1.261228,-1.261228,0.900000
-Which country is known to its people as Suomen Tasavalta?,-1.6668696403503418,,1.6668696403503418,43,-1.261228,-1.261228,0.900000
-Which crusade was led by Philip II Augustus of France and Richard I of England?,-1.5873377323150635,,1.5873377323150635,47,-1.261228,-1.261228,0.900000
-In which Netherlands city does the United Nations International Court of Justice sit?,-1.6498833894729614,,1.6498833894729614,46,-1.261228,-1.261228,0.900000
-"In which battle did Harold II, the last Saxon king, lose his life?",-2.0227386951446533,,2.0227386951446533,39,-1.261228,-1.261228,0.900000
-Who proclaimed the People's Republic of China in 1949?,-1.7769064903259277,,1.7769064903259277,46,-1.261228,-1.261228,0.900000
-"Which wife of Henry VIII had already married twice before she became queen, and married for a fourth time after Henry's death?",-1.9249539375305176,,1.9249539375305176,42,-1.261228,-1.261228,0.900000
-In which country is the castle that gives the Habsburg dynasty its name?,-1.5817148685455322,,1.5817148685455322,50,-1.261228,-1.261228,0.900000
-Who were the victors of the Battle of Austerlitz?,-1.6149556636810303,,1.6149556636810303,45,-1.261228,-1.261228,0.900000
-In which parliament has the UK 87 seats for members who are elected for a five0-year term?,-1.560075044631958,,1.560075044631958,46,-1.261228,-1.261228,0.900000
-What was the former name of the British Green Party?,-1.6418898105621338,,1.6418898105621338,50,-1.261228,-1.261228,0.900000
-Who were the two prime ministers of Britain during World War II?,-1.5784897804260254,,1.5784897804260254,46,-1.261228,-1.261228,0.900000
-"""What is the more common name of the """"simple plurality"""" system of voting?""",-1.9401981830596924,,1.9401981830596924,48,-1.261228,-1.261228,0.900000
-What word for unthinking patriotism is derived from the name of one of Napoleon's admirers?,-2.0629801750183105,,2.0629801750183105,42,-1.261228,-1.261228,0.900000
-Which builder of steam engines formed a successful partnership with Matthew Boulton?,-1.7313979864120483,,1.7313979864120483,47,-1.261228,-1.261228,0.900000
-What was the nickname of the French singer Edith Piaf?,-1.713325023651123,,1.713325023651123,49,-1.261228,-1.261228,0.900000
-Whose birthday is celebrated by a public holiday on the third Monday in January in the USA?,-1.6411514282226562,,1.6411514282226562,47,-1.261228,-1.261228,0.900000
-What type of coal is brown and fibrous?,-1.5254194736480713,,1.5254194736480713,48,-1.261228,-1.261228,0.900000
-What raw material is used for making glass?,-1.6827876567840576,,1.6827876567840576,48,-1.261228,-1.261228,0.900000
-What kind of an organism is a truffle?,-1.5832252502441406,,1.5832252502441406,45,-1.261228,-1.261228,0.900000
-What is the name of the strong material found in plant cell walls?,-1.6204547882080078,,1.6204547882080078,45,-1.261228,-1.261228,0.900000
-What name is given to the change of state from liquid to gas?,-1.6220725774765015,,1.6220725774765015,43,-1.261228,-1.261228,0.900000
-"Which branch of science has four fundamental principles: addition, subtraction, multiplication, and division.",-1.7140157222747803,,1.7140157222747803,46,-1.261228,-1.261228,0.900000
-What is the force that opposes the relative motion of two bodies that are in contact?,-1.7409708499908447,,1.7409708499908447,41,-1.261228,-1.261228,0.900000
-What is the fastest animal on two legs?,-1.6844258308410645,,1.6844258308410645,41,-1.261228,-1.261228,0.900000
-What is the green pigment used by plants to trap sunlight?,-1.7831965684890747,,1.7831965684890747,45,-1.261228,-1.261228,0.900000
-What id the name given to the study of birds?,-1.5690122842788696,,1.5690122842788696,49,-1.261228,-1.261228,0.900000
-"Of which reptile are there only two species, one living in the Mississippi and the other in China?",-1.214782953262329,,1.214782953262329,49,-1.261228,-1.261228,0.900000
-"What type of seaweed grows up to 100 meters in length, and is farmed for its alginates?",-1.3441545963287354,,1.3441545963287354,46,-1.261228,-1.261228,0.900000
-Where in a vertebrate would you find the protein myoglobin?,-1.673919439315796,,1.673919439315796,46,-1.261228,-1.261228,0.900000
-"What is the most abundant substance in the plant kingdom, which no mammal produces the enzyme to digest?",-1.1850619316101074,,1.1850619316101074,40,-1.261228,-1.261228,0.900000
-"Which family of insects has species named 'drivers', 'weavers', 'and even individuals called 'soldiers'?",-1.3739466667175293,,1.3739466667175293,45,-1.261228,-1.261228,0.900000
-What name is given to the study of animal behavior?,-1.444288969039917,,1.444288969039917,46,-1.261228,-1.261228,0.900000
-Mosses are classified as belonging to which part of the plant kingdom?,-1.5039013624191284,,1.5039013624191284,44,-1.261228,-1.261228,0.900000
-"Which rodent rears its young, called kittens, in a nest called a drey?",-1.4286980628967285,,1.4286980628967285,39,-1.261228,-1.261228,0.900000
-What has a central vein called a midrib?,-1.4890530109405518,,1.4890530109405518,45,-1.261228,-1.261228,0.900000
-"Which mammal constructs a lodge in which to store food, rear young, and pass the winter?",-1.357421875,,1.357421875,46,-1.261228,-1.261228,0.900000
-What is the generic word for plants that grow in water or water-logged conditions?,-1.2763850688934326,,1.2763850688934326,47,-1.261228,-1.261228,0.900000
-"Which teeth are the third molars, and are always the last to0 erupt?",-1.5934001207351685,,1.5934001207351685,49,-1.261228,-1.261228,0.900000
-What is secreted by the pancreas to regulate blood sugar levels?,-1.4442040920257568,,1.4442040920257568,46,-1.261228,-1.261228,0.900000
-How many chambers has the heart?,-1.76918363571167,,1.76918363571167,42,-1.261228,-1.261228,0.900000
-What is the name of the large buttock and thigh muscle?,-1.4962348937988281,,1.4962348937988281,47,-1.261228,-1.261228,0.900000
-"When the egg is released from the ovary, what is left behind?",-1.4146809577941895,,1.4146809577941895,43,-1.261228,-1.261228,0.900000
-What is the scientific name for the heart's pacemaker?,-1.462336540222168,,1.462336540222168,46,-1.261228,-1.261228,0.900000
-Which hormone helps control ovulation?,-1.445847988128662,,1.445847988128662,49,-1.261228,-1.261228,0.900000
-What is the second most common gas in the atmosphere?,-1.4990545511245728,,1.4990545511245728,45,-1.261228,-1.261228,0.900000
-What is the term for nutrient enrichment of lakes?,-1.7618099451065063,,1.7618099451065063,48,-1.261228,-1.261228,0.900000
-Five-legged creatures have damaged which 1250 mile long wonder of the world?,-1.322387456893921,,1.322387456893921,45,-1.261228,-1.261228,0.900000
-Which radioactive substance sometimes occurs naturally in spring water?,-1.4750022888183594,,1.4750022888183594,48,-1.261228,-1.261228,0.900000
-__AVG_C_RET_SIZE__,84.863333
-__RETRIEVAL_COVERAGE__,0.903333
-__RETRIEVAL_COVERAGE_HITS__,271/300
+Who was the man behind The Chipmunks?,-1.272271752357483,,1.272271752357483,50,-1.254468,-1.254468,0.900000
+What star sign is Jamie Lee Curtis?,-1.591923713684082,,1.591923713684082,50,-1.254468,-1.254468,0.900000
+Which Lloyd Webber musical premiered in the US on 10th December 1993?,-1.7687911987304688,,1.7687911987304688,49,-1.254468,-1.254468,0.900000
+Who was the next British Prime Minister after Arthur Balfour?,-1.4084926843643188,,1.4084926843643188,47,-1.254468,-1.254468,0.900000
+Who had a 70s No 1 hit with Kiss You All Over?,-1.7296603918075562,,1.7296603918075562,49,-1.254468,-1.254468,0.900000
+What claimed the life of singer Kathleen Ferrier?,-1.7558813095092773,,1.7558813095092773,49,-1.254468,-1.254468,0.900000
+Rita Coolidge sang the title song for which Bond film?,-1.8195981979370117,,1.8195981979370117,44,-1.254468,-1.254468,0.900000
+To the nearest million what is the population of Australia?,-1.4797942638397217,,1.4797942638397217,45,-1.254468,-1.254468,0.900000
+What was the last US state to reintroduce alcohol after prohibition?,-1.4389187097549438,,1.4389187097549438,50,-1.254468,-1.254468,0.900000
+Which actress was voted Miss Greenwich Village in 1942?,-1.5013465881347656,,1.5013465881347656,47,-1.254468,-1.254468,0.900000
+What is the Japanese share index called?,-1.0261132717132568,,1.0261132717132568,43,-1.254468,-1.254468,0.900000
+What was the name of Michael Jackson's autobiography written in 1988?,-1.5900979042053223,,1.5900979042053223,50,-1.254468,-1.254468,0.900000
+In which decade did stereo records first go on sale?,-1.150181531906128,,1.150181531906128,48,-1.254468,-1.254468,0.900000
+What was golfing great Ben Hogan's famous reply when he was asked how to improve one's game?,-1.4991958141326904,,1.4991958141326904,50,-1.254468,-1.254468,0.900000
+In what year's Olympics were electric timing devices and a public-address system used for the first time?,-1.7634656429290771,,1.7634656429290771,43,-1.254468,-1.254468,0.900000
+Why is the site of a boxing match called a ring when it's square?,-1.768775224685669,,1.768775224685669,27,-1.254468,-1.254468,0.900000
+"In the very first Boston Marathon, 15 runners competed. How many finished?",-1.56818425655365,,1.56818425655365,46,-1.254468,-1.254468,0.900000
+"""How many different animal shapes are there in the """"Animal Crackers"""" cookie zoo?""",-1.6285314559936523,,1.6285314559936523,35,-1.254468,-1.254468,0.900000
+Which volcano in Tanzania is the highest mountain in Africa?,-1.6442971229553223,,1.6442971229553223,47,-1.254468,-1.254468,0.900000
+The flag of Libya is a plain rectangle of which color?,-2.01904559135437,,2.01904559135437,47,-1.254468,-1.254468,0.900000
+Of which African country is Niamey the capital?,-1.678889274597168,,1.678889274597168,46,-1.254468,-1.254468,0.900000
+Who was the director of the CIA from 1976-81?,-1.5006048679351807,,1.5006048679351807,45,-1.254468,-1.254468,0.900000
+Which musical featured the song The Street Where You Live?,-1.536144495010376,,1.536144495010376,49,-1.254468,-1.254468,0.900000
+"""Who was the target of the failed """"Bomb Plot"""" of 1944?""",-1.5223718881607056,,1.5223718881607056,49,-1.254468,-1.254468,0.900000
+Who had an 80s No 1 hit with Hold On To The Nights?,-1.8104074001312256,,1.8104074001312256,47,-1.254468,-1.254468,0.900000
+Who directed the classic 30s western Stagecoach?,-1.5930089950561523,,1.5930089950561523,49,-1.254468,-1.254468,0.900000
+Dave Gilmore and Roger Waters were in which rock group?,-1.5208208560943604,,1.5208208560943604,50,-1.254468,-1.254468,0.900000
+Which highway was Revisited in a classic 60s album by Bob Dylan?,-1.8091554641723633,,1.8091554641723633,50,-1.254468,-1.254468,0.900000
+Which was the only eastern bloc country to participate in the 1984 LA Olympics?,-1.5329934358596802,,1.5329934358596802,42,-1.254468,-1.254468,0.900000
+Which 90s sci fi series with James Belushi was based on Bruce Wagner's comic strip of the same name?,-1.5867178440093994,,1.5867178440093994,46,-1.254468,-1.254468,0.900000
+If I Were A Rich Man Was a big hit from which stage show?,-1.511189341545105,,1.511189341545105,50,-1.254468,-1.254468,0.900000
+Men Against the Sea and Pitcairn's Island were two sequels to what famous novel?,-1.6826435327529907,,1.6826435327529907,49,-1.254468,-1.254468,0.900000
+What is the only novel to top the best-seller lists for two consecutive years?,-1.3559951782226562,,1.3559951782226562,49,-1.254468,-1.254468,0.900000
+"To whom did Helen Keller dedicate her autobiography, The Story of My Life?",-2.0749309062957764,,2.0749309062957764,37,-1.254468,-1.254468,0.900000
+"""Complete this Biblical quotation: """"It is easier for a camel to go through the eye of a needle, than...""",-2.157165050506592,,2.157165050506592,27,-1.254468,-1.254468,0.900000
+What was Truman Capote's last name before he was adopted by his stepfather?,-1.7692610025405884,,1.7692610025405884,45,-1.254468,-1.254468,0.900000
+What book knocked Henry Kissinger's White house Years out of first place on the best-seller list in November 1979?,-0.8956636190414429,,0.8956636190414429,6,-1.254468,-1.254468,0.900000
+"In Lewis Carroll's poem The Hunting of the Snark, what did the elusive, troublesome snark turn into to fool hunters?",-0.737183690071106,,0.737183690071106,1,-1.254468,-1.254468,0.900000
+In what state was playwright Tennessee Williams born?,-1.5381827354431152,,1.5381827354431152,50,-1.254468,-1.254468,0.900000
+Who was the only Englishman to become Pope?,-1.4430418014526367,,1.4430418014526367,39,-1.254468,-1.254468,0.900000
+"In the Bible, who did the sun and moon stand still before?",-1.6020101308822632,,1.6020101308822632,44,-1.254468,-1.254468,0.900000
+What Michelle Pfeiffer movie got a boost from the Coolio song Gangsta's Paradise?,-1.8175946474075317,,1.8175946474075317,48,-1.254468,-1.254468,0.900000
+"In the Bible, who saw the handwriting on the wall?",-1.4534075260162354,,1.4534075260162354,46,-1.254468,-1.254468,0.900000
+What comic strip character was named after heavyweight boxing champion James J. Jeffries?,-1.6670490503311157,,1.6670490503311157,45,-1.254468,-1.254468,0.900000
+What was President Gerald Ford's middle name?,-1.6348766088485718,,1.6348766088485718,45,-1.254468,-1.254468,0.900000
+Who recorded the When Harry Met Sally soundtrack?,-1.7227585315704346,,1.7227585315704346,45,-1.254468,-1.254468,0.900000
+Art Garfunkel trained for which profession although he didn't qualify?,-1.4914578199386597,,1.4914578199386597,47,-1.254468,-1.254468,0.900000
+Who was the last inmate of Spandau jail in Berlin?,-1.6056801080703735,,1.6056801080703735,47,-1.254468,-1.254468,0.900000
+What was Eddie Murphy's first movie?,-1.4570921659469604,,1.4570921659469604,47,-1.254468,-1.254468,0.900000
+In the 80s who wrote the novel Empire of The Sun?,-1.6994318962097168,,1.6994318962097168,50,-1.254468,-1.254468,0.900000
+Kagoshima international airport is in which country?,-1.6186473369598389,,1.6186473369598389,50,-1.254468,-1.254468,0.900000
+In which sport could the Pacers take on the Pistons?,-1.4083640575408936,,1.4083640575408936,50,-1.254468,-1.254468,0.900000
+Kim Carnes' nine weeks at No 1 with Bette Davis Eyes was interrupted for one week by which song?,-2.256258487701416,,2.256258487701416,44,-1.254468,-1.254468,0.900000
+Where in Canada is the Lion's Gate bridge?,-1.5658257007598877,,1.5658257007598877,49,-1.254468,-1.254468,0.900000
+What was Walter Matthau's first movie?,-1.5568691492080688,,1.5568691492080688,49,-1.254468,-1.254468,0.900000
+Otis Barton was a pioneer in exploring where?,-1.793409824371338,,1.793409824371338,45,-1.254468,-1.254468,0.900000
+Where in England was actor Nigel Hawthorne born?,-1.9310766458511353,,1.9310766458511353,50,-1.254468,-1.254468,0.900000
+What would Kevin Scale have been called if it had adopted the originator's first name?,-0.9617794752120972,,0.9617794752120972,48,-1.254468,-1.254468,0.900000
+"What mythological beast has the head of a man, the body of a lion, and the tail and feet of a dragon?",-1.2312371730804443,,1.2312371730804443,41,-1.254468,-1.254468,0.900000
+"In Greek mythology, who were Arges, Brontes and Steropes?",-1.9514747858047485,,1.9514747858047485,45,-1.254468,-1.254468,0.900000
+"In Greek mythology, what were the names of Oedipus's parents?",-1.6915936470031738,,1.6915936470031738,24,-1.254468,-1.254468,0.900000
+Which musician founded the Red Hot Peppers?,-1.2646427154541016,,1.2646427154541016,50,-1.254468,-1.254468,0.900000
+Where did the Shinning Path terrorists operate?,-0.9260799884796143,,0.9260799884796143,50,-1.254468,-1.254468,0.900000
+How old was Jimi Hendrix when he died?,-1.4630846977233887,,1.4630846977233887,46,-1.254468,-1.254468,0.900000
+Which Brit broke the land speed record in 1990 in Thrust 2?,-1.5847182273864746,,1.5847182273864746,45,-1.254468,-1.254468,0.900000
+In which state was Gene Vincent born?,-1.8645304441452026,,1.8645304441452026,50,-1.254468,-1.254468,0.900000
+How was the European Recovery Program in the 1940s more commonly known?,-1.6525688171386719,,1.6525688171386719,47,-1.254468,-1.254468,0.900000
+Brandon Lee died during the making of which movie?,-1.6491365432739258,,1.6491365432739258,44,-1.254468,-1.254468,0.900000
+Who had a 70s No 1 hit with Let's Do It Again?,-1.9102133512496948,,1.9102133512496948,47,-1.254468,-1.254468,0.900000
+Who had a Too Legit To Quit Tour?,-1.531111717224121,,1.531111717224121,49,-1.254468,-1.254468,0.900000
+"""According to Rudyard Kipling what were the """"two imposters"""" to meet and treat the same day?""",-1.4027642011642456,,1.4027642011642456,45,-1.254468,-1.254468,0.900000
+Who is the most successful UK solo artist in the USA?,-1.3238712549209595,,1.3238712549209595,46,-1.254468,-1.254468,0.900000
+Where was horse racing's Breeder's Cup held in 1987?,-1.5727643966674805,,1.5727643966674805,32,-1.254468,-1.254468,0.900000
+Which country does the airline TAAG come from?,-1.4797165393829346,,1.4797165393829346,47,-1.254468,-1.254468,0.900000
+Which US No 1 single came from Diana Ross's platinum album Diana?,-1.6251263618469238,,1.6251263618469238,49,-1.254468,-1.254468,0.900000
+River Phoenix died during the making of which movie?,-1.7868287563323975,,1.7868287563323975,49,-1.254468,-1.254468,0.900000
+Which artist David was born in Bradford UK?,-1.620384931564331,,1.620384931564331,47,-1.254468,-1.254468,0.900000
+What is Mel Gibson's middle name?,-1.562129020690918,,1.562129020690918,45,-1.254468,-1.254468,0.900000
+Richard Daley was mayor of which city for 21 years?,-2.0271332263946533,,2.0271332263946533,50,-1.254468,-1.254468,0.900000
+"""In which movie did Garbo say, """"I want to be alone"""".""",-1.7454843521118164,,1.7454843521118164,47,-1.254468,-1.254468,0.900000
+Robert Kirkpatrick of California grew the world's biggest what?,-0.9126554727554321,,0.9126554727554321,49,-1.254468,-1.254468,0.900000
+What is Osbert Lancaster best known for producing?,-1.8120663166046143,,1.8120663166046143,50,-1.254468,-1.254468,0.900000
+Who was the defending champion when Martina Navratilova first won Wimbledon singles?,-1.8835248947143555,,1.8835248947143555,48,-1.254468,-1.254468,0.900000
+Who was the first US-born winner of golf's British Open?,-1.800989031791687,,1.800989031791687,49,-1.254468,-1.254468,0.900000
+In which country is the Sky Train Rail bridge?,-1.3856909275054932,,1.3856909275054932,50,-1.254468,-1.254468,0.900000
+What was the Paramount Film Company originally called?,-1.281436800956726,,1.281436800956726,48,-1.254468,-1.254468,0.900000
+Which founder of the company Triad was accused by the USA of receiving bribes?,-1.234500765800476,,1.234500765800476,46,-1.254468,-1.254468,0.900000
+Who was the first person after Scott to reach the South Pole overland?,-1.6324491500854492,,1.6324491500854492,44,-1.254468,-1.254468,0.900000
+Which journalist first told the world about the My Lai massacre?,-1.739896535873413,,1.739896535873413,49,-1.254468,-1.254468,0.900000
+What is the name of Terence and Shirley Conran's dress designer son?,-1.9319055080413818,,1.9319055080413818,47,-1.254468,-1.254468,0.900000
+Which drink did The Spice Girls promote?,-1.4591026306152344,,1.4591026306152344,49,-1.254468,-1.254468,0.900000
+Who was the youngest brother in the Beach Boys?,-1.433383822441101,,1.433383822441101,49,-1.254468,-1.254468,0.900000
+Which actress was called by the US Senate a 'powerful force of evil' when she left her husband and child in 1948?,-0.9825335144996643,,0.9825335144996643,44,-1.254468,-1.254468,0.900000
+Who first hosted Family Feud?,-1.5598998069763184,,1.5598998069763184,44,-1.254468,-1.254468,0.900000
+What did the Lone Ranger's title Kemo Sabe mean in Apache?,-2.05734920501709,,2.05734920501709,39,-1.254468,-1.254468,0.900000
+Who or what was Gentle Ben in the 60s TV series?,-1.874204397201538,,1.874204397201538,50,-1.254468,-1.254468,0.900000
+Which 70s show was based on the British show Till Death Us Do Part?,-1.4359291791915894,,1.4359291791915894,45,-1.254468,-1.254468,0.900000
+On what date in 1969 did Neil Armstrong first set foot on the Moon?,-1.7590150833129883,,1.7590150833129883,48,-1.254468,-1.254468,0.900000
+Bandar Seri Begawan International airport is in which country?,-1.6932847499847412,,1.6932847499847412,50,-1.254468,-1.254468,0.900000
+What was the profession of Paul Strand (1890 - 1976)?,-1.6325182914733887,,1.6325182914733887,50,-1.254468,-1.254468,0.900000
+"""Which supermodel said, """"I look very scary in the mornings?""",-1.081568717956543,,1.081568717956543,48,-1.254468,-1.254468,0.900000
+Who wrote the song MacArthur Park?,-1.7324576377868652,,1.7324576377868652,47,-1.254468,-1.254468,0.900000
+Who had a 60s No 1 with Downtown?,-1.2532658576965332,,1.2532658576965332,50,-1.254468,-1.254468,0.900000
+"Who was born first, Kiefer Sutherland or Christian Slater?",-1.7039908170700073,,1.7039908170700073,45,-1.254468,-1.254468,0.900000
+"To the nearest two, how many tennis Grand Slam titles did Jimmy Connors win?",-1.8138740062713623,,1.8138740062713623,43,-1.254468,-1.254468,0.900000
+Who was the Georgia Peach?,-1.4582691192626953,,1.4582691192626953,50,-1.254468,-1.254468,0.900000
+Who set fire to his guitar at the Monterey Pop festival in 19676?,-1.9658931493759155,,1.9658931493759155,48,-1.254468,-1.254468,0.900000
+Della Street was whose secretary?,-1.814758539199829,,1.814758539199829,45,-1.254468,-1.254468,0.900000
+"In music, who was Sweet and Innocent and Too Young?",-1.6297783851623535,,1.6297783851623535,41,-1.254468,-1.254468,0.900000
+Who is featured on Puff Daddy's Can't Hold Me Down?,-1.945940613746643,,1.945940613746643,50,-1.254468,-1.254468,0.900000
+What had Edmond Hillary worked at before taking up mountain climbing?,-1.3970426321029663,,1.3970426321029663,47,-1.254468,-1.254468,0.900000
+In which American state is the Isabella Stewart Gardner Museum?,-1.6456955671310425,,1.6456955671310425,50,-1.254468,-1.254468,0.900000
+Benina international airport is in which country?,-1.7406240701675415,,1.7406240701675415,50,-1.254468,-1.254468,0.900000
+"In 1986, which TV station sponsored the world's biggest wine tasting?",-1.2667765617370605,,1.2667765617370605,49,-1.254468,-1.254468,0.900000
+"To a thousand, what is the area of Illinois in square miles?",-1.5479936599731445,,1.5479936599731445,46,-1.254468,-1.254468,0.900000
+Beloved in 1999 was whose first movie since The Color Purple in 1985?,-1.3994905948638916,,1.3994905948638916,49,-1.254468,-1.254468,0.900000
+Which Star Trek star directed Three Men and a Baby?,-1.530192255973816,,1.530192255973816,49,-1.254468,-1.254468,0.900000
+Which sitcom star appeared on the big screening The Object of My Affection?,-1.5127649307250977,,1.5127649307250977,48,-1.254468,-1.254468,0.900000
+"""Which character did Julia """"Roberts play in Steven Spielberg's Hook?""",-1.8120043277740479,,1.8120043277740479,45,-1.254468,-1.254468,0.900000
+Which US president did Anthony Hopkins play in a film whose title was simply his name?,-1.428045630455017,,1.428045630455017,40,-1.254468,-1.254468,0.900000
+Which movie was a biopic about the life of David Helfgott?,-1.5858327150344849,,1.5858327150344849,50,-1.254468,-1.254468,0.900000
+Which film director guested as the FBI Director in The Silence of the Lambs?,-1.6322497129440308,,1.6322497129440308,48,-1.254468,-1.254468,0.900000
+In which sci fi classic did the space ship Nostromo first appear?,-1.5398530960083008,,1.5398530960083008,49,-1.254468,-1.254468,0.900000
+Nigel Hawthorne was Oscar nominated for The Madness of which King?,-2.0055155754089355,,2.0055155754089355,49,-1.254468,-1.254468,0.900000
+Which Swedish actress won the Best Supporting Actress Oscar for Murder on the Orient Express?,-1.9825929403305054,,1.9825929403305054,49,-1.254468,-1.254468,0.900000
+Which Oscar-nominated film had You Sexy Thing as its theme song?,-1.619340419769287,,1.619340419769287,45,-1.254468,-1.254468,0.900000
+Which Joan's career revived in Whatever Happened to Baby Jane?,-1.6726315021514893,,1.6726315021514893,50,-1.254468,-1.254468,0.900000
+Which much-loved actor won the Best Actor Oscar for The Philadelphia Story?,-1.6234526634216309,,1.6234526634216309,41,-1.254468,-1.254468,0.900000
+Which legendary dancer was Oscar-nominated for The Towering Inferno?,-1.499492883682251,,1.499492883682251,46,-1.254468,-1.254468,0.900000
+What was the name of the brothel in The Best Little Whorehouse in Texas?,-1.8279304504394531,,1.8279304504394531,49,-1.254468,-1.254468,0.900000
+Who was the male star of the movie The Man of La Mancha?,-1.566778540611267,,1.566778540611267,50,-1.254468,-1.254468,0.900000
+What relation is Joey Richardson to Vanessa Redgrave?,-1.5566117763519287,,1.5566117763519287,43,-1.254468,-1.254468,0.900000
+Melanie Molitor is the mom of which tennis world NO 1?,-1.8959484100341797,,1.8959484100341797,50,-1.254468,-1.254468,0.900000
+Marc Dutroux hit the headlines over a 'house of horrors' in which country?,-1.585196852684021,,1.585196852684021,45,-1.254468,-1.254468,0.900000
+On which date in 1945 did Hitler take cyanide then shoot himself?,-1.7368284463882446,,1.7368284463882446,42,-1.254468,-1.254468,0.900000
+How old would Elvis Presley have been had he lived to the end of the 20th century?,-1.3603101968765259,,1.3603101968765259,50,-1.254468,-1.254468,0.900000
+In which river is the Boulder Dam?,-1.0292243957519531,,1.0292243957519531,50,-1.254468,-1.254468,0.900000
+"Which sports event was first held at Worcester, Massachusetts in 1927?",-1.3872551918029785,,1.3872551918029785,49,-1.254468,-1.254468,0.900000
+In which European city is the Belvederen Gallery?,-1.6535412073135376,,1.6535412073135376,49,-1.254468,-1.254468,0.900000
+How old was Woody Herman when he founded his own orchestra?,-1.6883876323699951,,1.6883876323699951,49,-1.254468,-1.254468,0.900000
+For which movie did Katharine Hepburn win her second Oscar?,-1.6020488739013672,,1.6020488739013672,46,-1.254468,-1.254468,0.900000
+Who had a 60s No 1 hit with This Diamond Ring?,-1.2544682025909424,,1.2544682025909424,49,-1.254468,-1.254468,0.900000
+The world was first aware of the Chernobyl disaster after detectors were triggered at a nuclear plant in which country?,-1.475685954093933,,1.475685954093933,46,-1.254468,-1.254468,0.900000
+In which country was the first permanent bungee jumping site situated?,-1.9208052158355713,,1.9208052158355713,46,-1.254468,-1.254468,0.900000
+Who succeeded Brezhnev as Soviet premier?,-1.7568681240081787,,1.7568681240081787,43,-1.254468,-1.254468,0.900000
+In the late 60s Owen Finlay MacLaren pioneered what useful item for parents of small chldren?,-0.7881675362586975,,0.7881675362586975,45,-1.254468,-1.254468,0.900000
+In which city's shipyard was Solidarity set up?,-1.6080667972564697,,1.6080667972564697,49,-1.254468,-1.254468,0.900000
+What was the first spacecraft to land on another planet?,-1.621600866317749,,1.621600866317749,45,-1.254468,-1.254468,0.900000
+Which female singer was born on exactly the same day as impressionist Rich Little?,-1.3543479442596436,,1.3543479442596436,46,-1.254468,-1.254468,0.900000
+What is Harrison Ford's real name?,-1.5179145336151123,,1.5179145336151123,45,-1.254468,-1.254468,0.900000
+Who's home runs record did Mark McGwire break in the 1998 season?,-1.8236958980560303,,1.8236958980560303,43,-1.254468,-1.254468,0.900000
+What were Joe DiMaggio's two baseball-playing brothers called?,-1.8145807981491089,,1.8145807981491089,25,-1.254468,-1.254468,0.900000
+Who won baseball's first World Series of the 80s?,-1.4063897132873535,,1.4063897132873535,47,-1.254468,-1.254468,0.900000
+What was Pete Sampras seeded when he won his first US Open?,-1.570839762687683,,1.570839762687683,46,-1.254468,-1.254468,0.900000
+"""Which boxer famously said,"""" If I can't beat this bum take my name off the record books?""""""",-1.5377423763275146,,1.5377423763275146,48,-1.254468,-1.254468,0.900000
+Where did Jonathan Edwards set his 1995 triple jump world record?,-2.19647216796875,,2.19647216796875,46,-1.254468,-1.254468,0.900000
+"In baseball, where do the Orioles come from?",-1.2939038276672363,,1.2939038276672363,49,-1.254468,-1.254468,0.900000
+The Naismith Award is presented in which sport?,-1.5854988098144531,,1.5854988098144531,49,-1.254468,-1.254468,0.900000
+Which cartoon and film character is the nickname of super athlete Michael Johnson?,-1.588059425354004,,1.588059425354004,47,-1.254468,-1.254468,0.900000
+For which team did Babe Ruth blast his last Major League home run?,-1.6610355377197266,,1.6610355377197266,46,-1.254468,-1.254468,0.900000
+How old would Bobby Kennedy have been had he lived to the end of the 20th century?,-1.353021502494812,,1.353021502494812,47,-1.254468,-1.254468,0.900000
+What was Warren Beatty's first movie?,-1.6089959144592285,,1.6089959144592285,49,-1.254468,-1.254468,0.900000
+Where does Roseanne have a tattoo of a pink rose?,-1.2655013799667358,,1.2655013799667358,46,-1.254468,-1.254468,0.900000
+"Which future Hollywood star got her break as Wonder Girl, Wonder Woman's sister Drusilla?",-1.917555809020996,,1.917555809020996,46,-1.254468,-1.254468,0.900000
+Mickey Braddock in the 50s series Circus Boy found fame with which surname in which pop band?,-2.0623998641967773,,2.0623998641967773,41,-1.254468,-1.254468,0.900000
+Which war veteran was Director of News & Special Events for ABC before find fame as a TV cop?,-0.9935784339904785,,0.9935784339904785,48,-1.254468,-1.254468,0.900000
+What US sitcom was the first exported to Britain?,-1.954708456993103,,1.954708456993103,48,-1.254468,-1.254468,0.900000
+In Hanna and Barbera's TV cartoons base on The Addams Family who was the voice of Gomez?,-1.4623925685882568,,1.4623925685882568,48,-1.254468,-1.254468,0.900000
+Who was the only female victim to be killed off in the opening credit sequence in Police Squad?,-1.5455849170684814,,1.5455849170684814,48,-1.254468,-1.254468,0.900000
+In 1990 who faced banners saying Goodbye Pineapple Face?,-1.3067759275436401,,1.3067759275436401,46,-1.254468,-1.254468,0.900000
+How much did Clint Eastwood receive per month for his duties as Mayor of Carmel?,-1.2123832702636719,,1.2123832702636719,46,-1.254468,-1.254468,0.900000
+Which US president won the Nobel Peace Prize in 1920?,-1.5315048694610596,,1.5315048694610596,43,-1.254468,-1.254468,0.900000
+Who beat Tim Henman in his first Wimbledon singles semifinal?,-1.829723596572876,,1.829723596572876,47,-1.254468,-1.254468,0.900000
+What relation was Flo Jo to Jackie Joyner Kersee?,-1.7079110145568848,,1.7079110145568848,47,-1.254468,-1.254468,0.900000
+How long was swimmer Michelle Smith-de Bruin banned for attempting to manipulate a drugs test?,-2.130861282348633,,2.130861282348633,42,-1.254468,-1.254468,0.900000
+Yuan Yuan was caught carrying drugs for which Chinese team?,-1.7511396408081055,,1.7511396408081055,50,-1.254468,-1.254468,0.900000
+Which grand slam did Pete Sampras not win in the 20th century?,-1.7138856649398804,,1.7138856649398804,45,-1.254468,-1.254468,0.900000
+In which events did Gert Fredriksson win six Olympic gold medals?,-1.957714319229126,,1.957714319229126,41,-1.254468,-1.254468,0.900000
+"How many of his 45 races did Mike Hawthorn, a former Formula One motor racing world champion, win?",-1.8556981086730957,,1.8556981086730957,42,-1.254468,-1.254468,0.900000
+On the Internet what is Spam?,-1.5910327434539795,,1.5910327434539795,50,-1.254468,-1.254468,0.900000
+In which country did the Internet start?,-1.5097057819366455,,1.5097057819366455,48,-1.254468,-1.254468,0.900000
+In which year was the Juilliard School founded in New York?,-1.7901723384857178,,1.7901723384857178,50,-1.254468,-1.254468,0.900000
+Where was horse racing's Breeders' Cup held in 1989?,-1.711634874343872,,1.711634874343872,49,-1.254468,-1.254468,0.900000
+"Who wrote My Life and Loves in 1926, originally banned in the US?",-1.2098441123962402,,1.2098441123962402,48,-1.254468,-1.254468,0.900000
+What was Blondie's last UK No 1 of the 80s?,-1.8640732765197754,,1.8640732765197754,50,-1.254468,-1.254468,0.900000
+"If it is 3 a.m. in Nevada, what time is it in Montana?",-1.2063037157058716,,1.2063037157058716,50,-1.254468,-1.254468,0.900000
+"In baseball, where do the Royals come from?",-1.3334797620773315,,1.3334797620773315,47,-1.254468,-1.254468,0.900000
+What is the largest city in Ohio?,-1.5473058223724365,,1.5473058223724365,46,-1.254468,-1.254468,0.900000
+In which decade of the 20th century was Anne Bancroft born?,-1.6512959003448486,,1.6512959003448486,50,-1.254468,-1.254468,0.900000
+The Suez Canal connects the Mediterranean Sea to which other Sea?,-1.7352626323699951,,1.7352626323699951,40,-1.254468,-1.254468,0.900000
+Vehicles from which country use the international registration letter E?,-1.3673253059387207,,1.3673253059387207,48,-1.254468,-1.254468,0.900000
+Which rock star did Cindy Crawford name her first son after?,-1.6952040195465088,,1.6952040195465088,49,-1.254468,-1.254468,0.900000
+Sun Yat Sen overthrew the emperor in which country establishing a republic after 2000 years of imperial rule?,-1.6044750213623047,,1.6044750213623047,41,-1.254468,-1.254468,0.900000
+Who designed the dress which made the most at Diana's dress auction?,-1.644918441772461,,1.644918441772461,50,-1.254468,-1.254468,0.900000
+Which Palestinian co-founded al Fatah in 1957?,-1.7037255764007568,,1.7037255764007568,45,-1.254468,-1.254468,0.900000
+In which country was Earl Spencer's acrimonious divorce settlement heard?,-1.7911791801452637,,1.7911791801452637,46,-1.254468,-1.254468,0.900000
+"In which North African country was Mohammed Al-Fayed, owner of Harrods department store in London, born?",-1.9184386730194092,,1.9184386730194092,46,-1.254468,-1.254468,0.900000
+Aung San Suu Kyi is a controversial leader in which country?,-1.404073715209961,,1.404073715209961,50,-1.254468,-1.254468,0.900000
+Which of the founders of United Artists had the last name nearest the beginning of the alphabet?,-1.0198317766189575,,1.0198317766189575,44,-1.254468,-1.254468,0.900000
+"In La Cage Aux Folles, what was La Cage Aux Folles?",-1.7358227968215942,,1.7358227968215942,50,-1.254468,-1.254468,0.900000
+__AVG_C_RET_SIZE__,19.792500
+__RETRIEVAL_COVERAGE__,0.652500
+__RETRIEVAL_COVERAGE_HITS__,261/400
