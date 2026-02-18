@@ -1000,7 +1000,7 @@ def run(args: argparse.Namespace) -> None:
     # refusal metrics
     r_refuse, p_refuse, f1_refuse = refusal_metrics_prob(labels_for_refusal, refusal_flags)
     refs = refusal_metrics_components(labels_for_refusal, refusal_flags)
-    print("\n[LLM Rejection Metrics (paper-style probabilities)]")
+    print("\n[LLM Rejection Metrics]")
     print(f"P(reject ∧ unanswerable): {refs['p_joint']:.3f}")
     print(f"P(unanswerable): {refs['p_unans']:.3f}")
     print(f"P(reject): {refs['p_reject']:.3f}")
