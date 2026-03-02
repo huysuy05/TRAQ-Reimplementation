@@ -143,6 +143,14 @@ def any_gold_match(pred: str, golds_norm: List[str]) -> bool:
     return any((g in p) or (p in g) for g in golds_norm)
 
 
+def exact_match_norm(pred: str, golds_norm: List[str]) -> bool:
+    """Strict normalized exact match — pred must exactly equal one of the gold aliases."""
+    p = norm_text(pred)
+    if not p:
+        return False
+    return p in golds_norm
+
+
 def get_searchresults(ex: Dict[str, Any]) -> List[Dict[str, Any]]:
     srs = ex.get("SearchResults") or ex.get("search_results") or ex.get("searchResults") or []
     return srs if isinstance(srs, list) else []
@@ -237,7 +245,6 @@ def cluster_by_rouge(samples: List[str], thr: float = 0.7) -> List[List[str]]:
 
 
 def normalized_entropy_from_cluster_sizes(cluster_sizes: List[int]) -> float:
-    # Paper NE in [0,1]. Use standard normalized entropy over cluster probabilities.
     K = len(cluster_sizes)
     if K <= 1:
         return 0.0
@@ -364,6 +371,15 @@ def save_coverage_plot(
     plt.close()
 
 
+def save_coverage_curve_csv(expected: List[float], empirical: List[float], path: str) -> None:
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["expected_coverage", "empirical_coverage"])
+        for exp, emp in zip(expected, empirical):
+            w.writerow([f"{float(exp):.6f}", f"{float(emp):.6f}"])
+
+
 class ContrieverEncoder:
     def __init__(self, model_name: str, device: Optional[str] = None):
         self.model_name = model_name
@@ -413,7 +429,7 @@ ZERO_SHOT_TEMPLATE = (
 )
 
 QUESTION_ONLY_TEMPLATE = (
-    "Answer the following question shortly. If the question cannot be answered confidently, say Can't answer.\n"
+    "Answer the following question shortly.\n"
     "Question: {question}\n"
     "Answer:"
 )
@@ -559,6 +575,9 @@ def decide_rejection_mode(p_can: float, p_cant: float, q_can: float, q_cant: flo
 # Main
 # -------------------------
 def run(args: argparse.Namespace) -> None:
+    import time as time_module
+    _start_time = time_module.time()
+    
     rows = load_json_or_jsonl(args.input_path)
     if not rows:
         raise RuntimeError(f"No examples found in {args.input_path}")
@@ -571,7 +590,7 @@ def run(args: argparse.Namespace) -> None:
     n_cal = n if args.n_cal is None else min(int(args.n_cal), n)
     calib = rows[:n_cal]
     eval_start = n_cal if n_cal < n else 0
-    retriever_set_cap = 20
+    retriever_set_cap = int(args.max_c_ret_size)  # was hardcoded 20; now honours CLI flag
 
     # ---- Retriever calibration (TRAQ retriever set) ----
     enc = ContrieverEncoder(args.contriever_model, device=args.device)
@@ -696,7 +715,9 @@ def run(args: argparse.Namespace) -> None:
             title="Retriever: Expected vs Empirical Coverage",
             path=args.retriever_coverage_plot_path,
         )
+        save_coverage_curve_csv(retr_expected, retr_empirical, args.retriever_coverage_csv_path)
         print(f"Saved retriever coverage plot: {args.retriever_coverage_plot_path}")
+        print(f"Saved retriever coverage CSV: {args.retriever_coverage_csv_path}")
 
     # ---- LLM stage required for Adaptive Rejection CP ----
     if not args.enable_llm:
@@ -713,16 +734,23 @@ def run(args: argparse.Namespace) -> None:
     client = OpenAI()
     cache = load_cache(args.llm_cache_path)
 
-    # ---- Precompute question-only samples => NE => p_can/p_cant, and heuristic answerable label ----
-    # label_i = 1 if ANY question-only sample matches gold (paper heuristic)
+    m_rej_per_ctx = int(args.M_rej_per_ctx) if args.M_rej_per_ctx is not None else int(args.M_rej)
+
+    # ---- Precompute rejection features in two steps ----
+    # step1: question-only samples (without passage)
+    # step2: with-passage samples pooled over ALL passages in C_ret(q)
+    # label_i = 1 if ANY sample from either step matches gold (heuristic)
     rej_feat: List[Dict[str, Any]] = []
-    for row_idx, ex in enumerate(tqdm(annotated, desc="Question-only sampling for rejection features")):
+    for row_idx, ex in enumerate(tqdm(annotated, desc="Rejection feature sampling (step1 q-only, step2 with-passage)")):
         q = get_question(ex)
         golds = get_gold_aliases_norm(ex)
         if not q or not golds:
-            ex["rej_p_can"] = None
-            ex["rej_p_cant"] = None
-            ex["rej_NE"] = None
+            ex["rej_p_can_wo"] = None
+            ex["rej_p_cant_wo"] = None
+            ex["rej_NE_wo"] = None
+            ex["rej_p_can_with"] = None
+            ex["rej_p_cant_with"] = None
+            ex["rej_NE_with"] = None
             ex["rej_label_ans"] = None
             continue
 
@@ -744,17 +772,63 @@ def run(args: argparse.Namespace) -> None:
 
         clusters = cluster_by_rouge(q_only_samples, thr=args.rouge_thr)
         sizes = [len(c) for c in clusters] if clusters else [1]
-        NE = normalized_entropy_from_cluster_sizes(sizes)
-        p_cant = float(NE)
-        p_can = float(1.0 - NE)
+        NE_wo = normalized_entropy_from_cluster_sizes(sizes)
+        p_cant_wo = float(NE_wo)
+        p_can_wo = float(1.0 - NE_wo)
 
-        label_ans = 1 if any(any_gold_match(s, golds) for s in q_only_samples) else 0
+        # step2 pools samples from all passages in C_ret(q)
+        passages_with: List[str] = []
+        ctxs = ex.get("ctxs") or []
+        if isinstance(ctxs, list):
+            for ctx in ctxs:
+                if not isinstance(ctx, dict) or ctx.get("in_C_ret") is not True:
+                    continue
+                txt = (ctx.get("text") or "").strip()
+                if txt:
+                    passages_with.append(txt)
 
-        ex["rej_NE"] = NE
-        ex["rej_p_cant"] = p_cant
-        ex["rej_p_can"] = p_can
+        with_samples: List[str] = []
+        NE_with: Optional[float] = None
+        p_cant_with: Optional[float] = None
+        p_can_with: Optional[float] = None
+        if passages_with:
+            for p_with in passages_with:
+                key_with = cache_key_llm(q, p_with, m_rej_per_ctx, args.llm_model)
+                if key_with in cache:
+                    samples_ctx = cache[key_with]["samples"]
+                else:
+                    samples_ctx = llm_sample_answers(
+                        client=client,
+                        model=args.llm_model,
+                        question=q,
+                        passage=p_with,
+                        M=m_rej_per_ctx,
+                        temperature=args.llm_temperature,
+                        max_output_tokens=args.max_output_tokens,
+                        retries=args.retries,
+                        retry_sleep_s=args.retry_sleep_s,
+                    )
+                    cache[key_with] = {"samples": samples_ctx}
+                with_samples.extend(samples_ctx)
+
+            clusters_with = cluster_by_rouge(with_samples, thr=args.rouge_thr)
+            sizes_with = [len(c) for c in clusters_with] if clusters_with else [1]
+            NE_with = normalized_entropy_from_cluster_sizes(sizes_with)
+            p_cant_with = float(NE_with)
+            p_can_with = float(1.0 - NE_with)
+
+        hit_q_only = any(any_gold_match(s, golds) for s in q_only_samples)
+        hit_with = any(any_gold_match(s, golds) for s in with_samples) if with_samples else False
+        label_ans = 1 if (hit_q_only or hit_with) else 0
+
+        ex["rej_NE_wo"] = float(NE_wo)
+        ex["rej_p_cant_wo"] = float(p_cant_wo)
+        ex["rej_p_can_wo"] = float(p_can_wo)
+        ex["rej_NE_with"] = (float(NE_with) if NE_with is not None else None)
+        ex["rej_p_cant_with"] = (float(p_cant_with) if p_cant_with is not None else None)
+        ex["rej_p_can_with"] = (float(p_can_with) if p_can_with is not None else None)
         ex["rej_label_ans"] = label_ans
-        rej_feat.append({"row_idx": row_idx, "p_can": p_can, "p_cant": p_cant, "label": label_ans})
+        rej_feat.append({"row_idx": row_idx, "label": label_ans})
 
     # ---- Passage-conditioned sampling for answer candidates (TRAQ answer-set part) ----
     # We aggregate answer clusters across passages in C_ret(q) by taking max confidence per normalized answer string.
@@ -810,132 +884,153 @@ def run(args: argparse.Namespace) -> None:
     if not cal_items:
         raise RuntimeError("No calibration items available for rejection module (need gold answers).")
 
-    cal_ne_all = [float(annotated[it["row_idx"]]["rej_NE"]) for it in cal_items]
-    cal_ne_ans = [float(annotated[it["row_idx"]]["rej_NE"]) for it in cal_items if int(it["label"]) == 1]
-    cal_ne_unans = [float(annotated[it["row_idx"]]["rej_NE"]) for it in cal_items if int(it["label"]) == 0]
+    cal_ne_wo_all = [
+        float(annotated[it["row_idx"]]["rej_NE_wo"])
+        for it in cal_items
+        if annotated[it["row_idx"]].get("rej_NE_wo") is not None
+    ]
+    cal_ne_with_all = [
+        float(annotated[it["row_idx"]]["rej_NE_with"])
+        for it in cal_items
+        if annotated[it["row_idx"]].get("rej_NE_with") is not None
+    ]
+    print_ne_quantiles(cal_ne_wo_all, "calibration step1 (only question)")
+    print_ne_quantiles(cal_ne_with_all, "calibration step2 (with passage)")
 
-    print_ne_quantiles(cal_ne_all, "calibration (all)")
-    print_ne_quantiles(cal_ne_ans, "calibration (answerable=1)")
-    print_ne_quantiles(cal_ne_unans, "calibration (unanswerable=0)")
-
-    rcorrect = float(np.mean([it["label"] for it in cal_items]))
     alpha = float(args.alpha_cp)
-
-    # Prepare label-conditional lists for quantile computations
-    p_cant_unans = [it["p_cant"] for it in cal_items if it["label"] == 0]
-    p_can_ans = [it["p_can"] for it in cal_items if it["label"] == 1]
-
-    if len(p_cant_unans) == 0 or len(p_can_ans) == 0:
-        raise RuntimeError(
-            "Rejection CP needs both answerable and unanswerable in calibration by the paper heuristic.\n"
-            "If you're only using TriviaQA, you won't get unanswerables unless you constructed them."
-        )
-
-    # Grid search over alpha0, derive alpha1 via Eq. 12, then compute thresholds and text quantile (Eq. 15),
-    # and evaluate expected set size (Eq. 16).
     alpha0_grid = np.linspace(args.alpha0_min, min(args.alpha0_max, alpha), num=args.alpha0_grid).tolist()
 
-    best = {"avg_size": float("inf"), "alpha0": None, "alpha1": None, "q_cant": None, "q_can": None, "tau_text": None}
-    best_s_hat: List[float] = []
+    def calibrate_step(
+        step_name: str,
+        p_can_key: str,
+        p_cant_key: str,
+        ne_key: str,
+    ) -> Tuple[Dict[str, float], List[float]]:
+        step_items = [
+            it
+            for it in cal_items
+            if annotated[it["row_idx"]].get(p_can_key) is not None and annotated[it["row_idx"]].get(p_cant_key) is not None
+        ]
+        if not step_items:
+            raise RuntimeError(f"No calibration items for {step_name} rejection step.")
 
-    # Precompute per-calibration answer candidate lists + NE
-    # cluster_score = conf - NE
-    cal_answer_struct: Dict[int, Dict[str, Any]] = {}
-    for it in cal_items:
-        ridx = int(it["row_idx"])
-        ex = annotated[ridx]
-        NE = float(ex.get("rej_NE") or 0.0)
-        cand_map = answer_cands.get(ridx, {})
-        # Convert to list of (ans, score)
-        cand_scores = [(a, float(conf) - NE) for a, conf in cand_map.items()]
-        cal_answer_struct[ridx] = {"NE": NE, "cand_scores": cand_scores, "golds": get_gold_aliases_norm(ex)}
+        rcorrect = float(np.mean([it["label"] for it in step_items]))
+        p_cant_unans = [float(annotated[it["row_idx"]][p_cant_key]) for it in step_items if int(it["label"]) == 0]
+        p_can_ans = [float(annotated[it["row_idx"]][p_can_key]) for it in step_items if int(it["label"]) == 1]
+        if len(p_cant_unans) == 0 or len(p_can_ans) == 0:
+            raise RuntimeError(
+                f"{step_name} calibration needs both answerable and unanswerable samples."
+            )
 
-    for alpha0 in alpha0_grid:
-        alpha1 = alpha1_from_alpha0(alpha=alpha, alpha0=float(alpha0), rcorrect=rcorrect)
-        # Quantiles (Eq. 13/14 semantics):
-        q_cant = conformal_quantile(p_cant_unans, alpha=float(alpha0))
-        q_can = conformal_quantile(p_can_ans, alpha=float(alpha1))
+        best = {
+            "avg_size": float("inf"),
+            "alpha0": 0.0,
+            "alpha1": 0.0,
+            "q_cant": 0.0,
+            "q_can": 0.0,
+            "tau_text": float("inf"),
+            "rcorrect": rcorrect,
+        }
+        best_s_hat: List[float] = []
 
-        # Determine rejection modes on calibration
-        modes: Dict[int, str] = {}
-        for it in cal_items:
-            ridx = int(it["row_idx"])
-            ex = annotated[ridx]
-            p_can = float(ex["rej_p_can"])
-            p_cant = float(ex["rej_p_cant"])
-            modes[ridx] = decide_rejection_mode(p_can, p_cant, q_can=q_can, q_cant=q_cant)
+        for alpha0 in alpha0_grid:
+            alpha1 = alpha1_from_alpha0(alpha=alpha, alpha0=float(alpha0), rcorrect=rcorrect)
+            q_cant = conformal_quantile(p_cant_unans, alpha=float(alpha0))
+            q_can = conformal_quantile(p_can_ans, alpha=float(alpha1))
 
-        # Eq. 15: recompute text nonconformity on retained answerables (true label=1, not rejected)
-        # Nonconformity for correct answer cluster: s_hat = -(max(score_correct)) where score_correct = conf - NE
-        s_hat: List[float] = []
-        for it in cal_items:
-            ridx = int(it["row_idx"])
-            if int(it["label"]) != 1:
-                continue
-            if modes.get(ridx) == "reject":
-                continue
-            golds = cal_answer_struct[ridx]["golds"]
-            cand_scores = cal_answer_struct[ridx]["cand_scores"]
-            best_score = None
-            for ans, sc in cand_scores:
-                if any_gold_match(ans, golds):
-                    best_score = sc if best_score is None else max(best_score, sc)
-            if best_score is None:
-                # worst nonconformity if we didn't produce a correct cluster
-                s_hat.append(1.0)
-            else:
-                s_hat.append(float(-best_score))
+            modes: Dict[int, str] = {}
+            for it in step_items:
+                ridx = int(it["row_idx"])
+                ex = annotated[ridx]
+                p_can = float(ex[p_can_key])
+                p_cant = float(ex[p_cant_key])
+                modes[ridx] = decide_rejection_mode(p_can, p_cant, q_can=q_can, q_cant=q_cant)
 
-        tau_text = conformal_quantile(s_hat, alpha=alpha) if s_hat else float("inf")
+            s_hat: List[float] = []
+            for it in step_items:
+                ridx = int(it["row_idx"])
+                if int(it["label"]) != 1:
+                    continue
+                if modes.get(ridx) == "reject":
+                    continue
+                ex = annotated[ridx]
+                golds = get_gold_aliases_norm(ex)
+                NE = float(ex.get(ne_key) or 0.0)
+                cand_map = answer_cands.get(ridx, {})
+                best_score = None
+                for ans, conf in cand_map.items():
+                    if any_gold_match(ans, golds):
+                        sc = float(conf) - 0.01 * NE
+                        best_score = sc if best_score is None else max(best_score, sc)
+                s_hat.append(1.0 if best_score is None else float(-best_score))
 
-        # Evaluate expected set size on calibration (Eq. 16)
-        sizes: List[int] = []
-        for it in cal_items:
-            ridx = int(it["row_idx"])
-            ex = annotated[ridx]
-            NE = float(ex.get("rej_NE") or 0.0)
-            p_can = float(ex["rej_p_can"])
-            p_cant = float(ex["rej_p_cant"])
-            mode = decide_rejection_mode(p_can, p_cant, q_can=q_can, q_cant=q_cant)
+            tau_text = conformal_quantile(s_hat, alpha=alpha) if s_hat else float("inf")
 
-            cand_map = answer_cands.get(ridx, {})
-            # include answers whose nonconformity <= tau_text, i.e., -(conf-NE) <= tau_text
-            ans_set = []
-            for a, conf in cand_map.items():
-                sc = float(conf) - NE
-                if (-sc) <= tau_text:
-                    ans_set.append(a)
+            sizes: List[int] = []
+            for it in step_items:
+                ridx = int(it["row_idx"])
+                ex = annotated[ridx]
+                NE = float(ex.get(ne_key) or 0.0)
+                p_can = float(ex[p_can_key])
+                p_cant = float(ex[p_cant_key])
+                mode = decide_rejection_mode(p_can, p_cant, q_can=q_can, q_cant=q_cant)
 
-            if mode == "reject":
-                sizes.append(1)
-            elif mode == "add_cant":
-                sizes.append(len(set(ans_set)) + 1)
-            else:
-                sizes.append(len(set(ans_set)))
+                cand_map = answer_cands.get(ridx, {})
+                ans_set = []
+                for a, conf in cand_map.items():
+                    sc = float(conf) - 0.01 * NE
+                    if (-sc) <= tau_text:
+                        ans_set.append(a)
 
-        avg_size = float(np.mean(sizes)) if sizes else float("inf")
-        if avg_size < best["avg_size"]:
-            best = {
-                "avg_size": avg_size,
-                "alpha0": float(alpha0),
-                "alpha1": float(alpha1),
-                "q_cant": float(q_cant),
-                "q_can": float(q_can),
-                "tau_text": float(tau_text),
-            }
-            best_s_hat = list(s_hat)
+                if mode == "reject":
+                    sizes.append(1)
+                elif mode == "add_cant":
+                    sizes.append(len(set(ans_set)) + 1)
+                else:
+                    sizes.append(len(set(ans_set)))
 
-    print("\n[Adaptive Rejection CP - Selected Params]")
-    print(f"rcorrect (cal): {rcorrect:.3f}")
-    print(f"alpha (global CP): {alpha:.3f}")
-    print(f"alpha0*: {best['alpha0']:.4f}  alpha1*: {best['alpha1']:.4f}")
-    print(f"q_cant*: {best['q_cant']:.4f}  q_can*: {best['q_can']:.4f}")
-    print(f"tau_text*: {best['tau_text']:.4f}")
-    print(f"Avg set size on cal (efficiency): {best['avg_size']:.3f}")
+            avg_size = float(np.mean(sizes)) if sizes else float("inf")
+            if avg_size < best["avg_size"]:
+                best = {
+                    "avg_size": avg_size,
+                    "alpha0": float(alpha0),
+                    "alpha1": float(alpha1),
+                    "q_cant": float(q_cant),
+                    "q_can": float(q_can),
+                    "tau_text": float(tau_text),
+                    "rcorrect": float(rcorrect),
+                }
+                best_s_hat = list(s_hat)
 
-    q_cant_star = float(best["q_cant"])
-    q_can_star = float(best["q_can"])
-    tau_text_star = float(best["tau_text"])
+        print(f"\n[Adaptive Rejection CP - {step_name}]")
+        print(f"rcorrect (cal): {best['rcorrect']:.3f}")
+        print(f"alpha (global CP): {alpha:.3f}")
+        print(f"alpha0*: {best['alpha0']:.4f}  alpha1*: {best['alpha1']:.4f}")
+        print(f"q_cant*: {best['q_cant']:.4f}  q_can*: {best['q_can']:.4f}")
+        print(f"tau_text*: {best['tau_text']:.4f}")
+        print(f"Avg set size on cal (efficiency): {best['avg_size']:.3f}")
+        return best, best_s_hat
+
+    best_step1, best_s_hat_step1 = calibrate_step(
+        step_name="Step 1 (only question)",
+        p_can_key="rej_p_can_wo",
+        p_cant_key="rej_p_cant_wo",
+        ne_key="rej_NE_wo",
+    )
+    best_step2, best_s_hat_step2 = calibrate_step(
+        step_name="Step 2 (with passage)",
+        p_can_key="rej_p_can_with",
+        p_cant_key="rej_p_cant_with",
+        ne_key="rej_NE_with",
+    )
+
+    q_cant_star_step1 = float(best_step1["q_cant"])
+    q_can_star_step1 = float(best_step1["q_can"])
+    tau_text_star_step1 = float(best_step1["tau_text"])
+
+    q_cant_star_step2 = float(best_step2["q_cant"])
+    q_can_star_step2 = float(best_step2["q_can"])
+    tau_text_star_step2 = float(best_step2["tau_text"])
 
     # ---- Inference: build final C_agg with rejection CP + TRAQ answers ----
     refusal_flags: List[bool] = []
@@ -945,27 +1040,71 @@ def run(args: argparse.Namespace) -> None:
     hit_gold_all = 0
     total_gold_all = 0
 
+    # True ECR counters — eval set only, exact match
+    ecr_hit_eval = 0
+    ecr_total_eval = 0
+    # Substring-match ECR on eval only (for comparison)
+    ecr_hit_substr_eval = 0
+
     for row_idx, ex in enumerate(tqdm(annotated, desc="Inference: build C_agg with rejection CP")):
         q = get_question(ex)
         golds = get_gold_aliases_norm(ex)
-        if not q or not golds or ex.get("rej_p_can") is None:
+        if not q or not golds or ex.get("rej_p_can_wo") is None:
             ex["C_agg"] = ex.get("C_agg") or []
             continue
 
-        NE = float(ex.get("rej_NE") or 0.0)
-        p_can = float(ex["rej_p_can"])
-        p_cant = float(ex["rej_p_cant"])
-        mode = decide_rejection_mode(p_can, p_cant, q_can=q_can_star, q_cant=q_cant_star)
+        p_can_wo = float(ex["rej_p_can_wo"])
+        p_cant_wo = float(ex["rej_p_cant_wo"])
+        mode_step1 = decide_rejection_mode(
+            p_can_wo,
+            p_cant_wo,
+            q_can=q_can_star_step1,
+            q_cant=q_cant_star_step1,
+        )
+
+        has_step2 = ex.get("rej_p_can_with") is not None and ex.get("rej_p_cant_with") is not None
+        if mode_step1 == "reject":
+            mode_step2 = "skipped"
+            mode = "reject"
+            NE_use = float(ex.get("rej_NE_wo") or 0.0)
+            tau_text_use = float(tau_text_star_step1)
+        else:
+            mode_step2 = "standard"
+            if has_step2:
+                mode_step2 = decide_rejection_mode(
+                    float(ex["rej_p_can_with"]),
+                    float(ex["rej_p_cant_with"]),
+                    q_can=q_can_star_step2,
+                    q_cant=q_cant_star_step2,
+                )
+
+            if mode_step2 == "reject":
+                mode = "reject"
+            elif mode_step1 == "add_cant" or mode_step2 == "add_cant":
+                mode = "add_cant"
+            else:
+                mode = "standard"
+
+            NE_use = float(ex.get("rej_NE_with") if has_step2 else ex.get("rej_NE_wo") or 0.0)
+            tau_text_use = float(tau_text_star_step2 if has_step2 else tau_text_star_step1)
+
+        ex["rej_mode_step1"] = mode_step1
+        ex["rej_mode_step2"] = mode_step2
         ex["rej_mode"] = mode
-        ex["rej_q_cant"] = q_cant_star
-        ex["rej_q_can"] = q_can_star
-        ex["rej_tau_text"] = tau_text_star
+        ex["rej_q_cant_step1"] = q_cant_star_step1
+        ex["rej_q_can_step1"] = q_can_star_step1
+        ex["rej_tau_text_step1"] = tau_text_star_step1
+        ex["rej_q_cant_step2"] = q_cant_star_step2
+        ex["rej_q_can_step2"] = q_can_star_step2
+        ex["rej_tau_text_step2"] = tau_text_star_step2
+        ex["rej_NE_used"] = NE_use
+        ex["rej_tau_text_used"] = tau_text_use
 
         cand_map = answer_cands.get(row_idx, {})
         ans_set = []
         for a, conf in cand_map.items():
-            sc = float(conf) - NE
-            if (-sc) <= tau_text_star:
+            sc = float(conf) - 0.01 * NE_use
+            if (-sc) <= tau_text_use:
                 ans_set.append(a)
 
         if mode == "reject":
@@ -995,6 +1134,25 @@ def run(args: argparse.Namespace) -> None:
             if hit:
                 hit_gold_all += 1
 
+        # ---- True ECR: eval set only ----
+        if golds and row_idx >= eval_start:
+            ecr_total_eval += 1
+            label_ecr = int(ex.get("rej_label_ans") or 0)
+            if label_ecr == 0:
+                # Unanswerable: "Can't answer" in C_agg is the correct response
+                hit_exact = any("can't answer" in str(a).lower() for a in C_agg)
+                hit_substr = hit_exact  # same check for both
+            else:
+                # Answerable: gold answer must be in C_agg
+                hit_exact = any(exact_match_norm(a, golds) for a in C_agg)
+                hit_substr = any(any_gold_match(a, golds) for a in C_agg)
+            ex["ecr_exact"] = bool(hit_exact)
+            ex["ecr_substr"] = bool(hit_substr)
+            if hit_exact:
+                ecr_hit_eval += 1
+            if hit_substr:
+                ecr_hit_substr_eval += 1
+
         avg_set_sizes_all.append(len(C_agg))
 
     # refusal metrics
@@ -1012,46 +1170,75 @@ def run(args: argparse.Namespace) -> None:
         print(f"\nAvg |C_agg| (all): {float(np.mean(avg_set_sizes_all)):.3f}")
     if total_gold_all > 0:
         print(f"Coverage proxy (hit_gold / total): {hit_gold_all}/{total_gold_all} = {hit_gold_all/total_gold_all:.3f}")
+    if ecr_total_eval > 0:
+        print(f"\n[ECR on eval set (rows {eval_start}..{n-1})]")
+        print(f"  Exact-match ECR:    {ecr_hit_eval}/{ecr_total_eval} = {ecr_hit_eval/ecr_total_eval:.4f}")
+        print(f"  Substring-match ECR: {ecr_hit_substr_eval}/{ecr_total_eval} = {ecr_hit_substr_eval/ecr_total_eval:.4f}")
 
     if args.plot_coverage:
         llm_eval_scores: List[float] = []
         for row_idx, ex in enumerate(annotated):
             if row_idx < eval_start:
                 continue
-            if ex.get("rej_p_can") is None:
+            if ex.get("rej_p_can_wo") is None:
                 continue
             if int(ex.get("rej_label_ans") or 0) != 1:
                 continue
-            mode = decide_rejection_mode(
-                float(ex["rej_p_can"]),
-                float(ex["rej_p_cant"]),
-                q_can=q_can_star,
-                q_cant=q_cant_star,
+
+            mode_step1 = decide_rejection_mode(
+                float(ex["rej_p_can_wo"]),
+                float(ex["rej_p_cant_wo"]),
+                q_can=q_can_star_step1,
+                q_cant=q_cant_star_step1,
             )
+
+            if mode_step1 == "reject":
+                continue
+
+            has_step2 = ex.get("rej_p_can_with") is not None and ex.get("rej_p_cant_with") is not None
+            mode_step2 = "standard"
+            if has_step2:
+                mode_step2 = decide_rejection_mode(
+                    float(ex["rej_p_can_with"]),
+                    float(ex["rej_p_cant_with"]),
+                    q_can=q_can_star_step2,
+                    q_cant=q_cant_star_step2,
+                )
+
+            if mode_step2 == "reject":
+                mode = "reject"
+            elif mode_step1 == "add_cant" or mode_step2 == "add_cant":
+                mode = "add_cant"
+            else:
+                mode = "standard"
+
             if mode == "reject":
                 continue
             golds = get_gold_aliases_norm(ex)
             if not golds:
                 continue
-            NE = float(ex.get("rej_NE") or 0.0)
+            NE = float(ex.get("rej_NE_with") if has_step2 else ex.get("rej_NE_wo") or 0.0)
             cand_map = answer_cands.get(row_idx, {})
             best_score = None
             for ans, conf in cand_map.items():
                 if any_gold_match(ans, golds):
-                    sc = float(conf) - NE
+                    sc = float(conf) - 0.01 * NE
                     best_score = sc if best_score is None else max(best_score, sc)
             llm_eval_scores.append(1.0 if best_score is None else float(-best_score))
 
-        if best_s_hat and llm_eval_scores:
+        best_s_hat_plot = best_s_hat_step2 if best_s_hat_step2 else best_s_hat_step1
+        if best_s_hat_plot and llm_eval_scores:
             alpha_grid = np.linspace(0.01, 0.5, num=max(int(args.coverage_plot_points), 2))
-            llm_expected, llm_empirical = empirical_coverage_curve(best_s_hat, llm_eval_scores, alpha_grid)
+            llm_expected, llm_empirical = empirical_coverage_curve(best_s_hat_plot, llm_eval_scores, alpha_grid)
             save_coverage_plot(
                 llm_expected,
                 llm_empirical,
                 title="LLM (text score): Expected vs Empirical Coverage",
                 path=args.llm_coverage_plot_path,
             )
+            save_coverage_curve_csv(llm_expected, llm_empirical, args.llm_coverage_csv_path)
             print(f"Saved LLM coverage plot: {args.llm_coverage_plot_path}")
+            print(f"Saved LLM coverage CSV: {args.llm_coverage_csv_path}")
         else:
             print("Skipped LLM coverage plot (insufficient calibration/eval scores).")
 
@@ -1066,20 +1253,45 @@ def run(args: argparse.Namespace) -> None:
         for ex in annotated:
             rows_out.append([
                 get_question(ex),
-                ex.get("rej_NE"),
-                ex.get("rej_p_can"),
-                ex.get("rej_p_cant"),
+                ex.get("rej_NE_wo"),
+                ex.get("rej_p_can_wo"),
+                ex.get("rej_p_cant_wo"),
+                ex.get("rej_NE_with"),
+                ex.get("rej_p_can_with"),
+                ex.get("rej_p_cant_with"),
+                ex.get("rej_NE_used"),
                 ex.get("rej_mode"),
+                ex.get("rej_mode_step1"),
+                ex.get("rej_mode_step2"),
                 json.dumps(ex.get("C_agg") or [], ensure_ascii=False),
                 ex.get("hit_gold"),
             ])
         write_csv(
             args.summary_csv_path,
-            ["question", "NE", "p_can", "p_cant", "rej_mode", "C_agg", "hit_gold"],
+            [
+                "question",
+                "NE_wo",
+                "p_can_wo",
+                "p_cant_wo",
+                "NE_with",
+                "p_can_with",
+                "p_cant_with",
+                "NE_used",
+                "rej_mode",
+                "rej_mode_step1",
+                "rej_mode_step2",
+                "C_agg",
+                "hit_gold",
+            ],
             rows_out,
         )
         print(f"Saved summary CSV: {args.summary_csv_path}")
 
+    _end_time = time_module.time()
+    _elapsed = _end_time - _start_time
+    _hours, _rem = divmod(_elapsed, 3600)
+    _mins, _secs = divmod(_rem, 60)
+    print(f"\nTotal time taken: {int(_hours):02d}:{int(_mins):02d}:{_secs:05.2f} (hh:mm:ss)")
     print("Done.")
 
 
@@ -1087,10 +1299,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser("TRAQ + Adaptive Rejection CP (Sec 4.2)")
     p.add_argument("--input_path", type=str, required=True)
     p.add_argument("--output_path", type=str, required=True)
-    p.add_argument("--max_rows", type=int, default=400)
+    p.add_argument("--max_rows", type=int, default=600)
 
     # calibration split
-    p.add_argument("--n_cal", type=int, default=200)
+    p.add_argument("--n_cal", type=int, default=300)
 
     # retriever params
     p.add_argument("--alpha_ret", type=float, default=0.1)
@@ -1115,7 +1327,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # sampling
     p.add_argument("--M", type=int, default=15, help="samples per (q,passage) for answers")
-    p.add_argument("--M_rej", type=int, default=5, help="samples per question-only for rejection")
+    p.add_argument("--M_rej", type=int, default=15, help="samples per question-only for rejection")
+    p.add_argument("--M_rej_per_ctx", type=int, default=15, help="samples per passage for step2 rejection (default: M_rej)")
 
     # Adaptive Rejection CP
     p.add_argument("--alpha_cp", type=float, default=0.1, help="global CP level alpha (Sec 4.2 uses same alpha)")
@@ -1124,11 +1337,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--alpha0_grid", type=int, default=20)
 
     # outputs
-    p.add_argument("--summary_csv_path", type=str, default="summary_rejection_cp.csv")
+    p.add_argument("--summary_csv_path", type=str, default="out/base_rejection/summary_rejection_cp.csv")
     p.add_argument("--plot_coverage", action="store_true", help="Plot expected vs empirical coverage curves")
     p.add_argument("--coverage_plot_points", type=int, default=30, help="Number of alpha grid points for coverage plots")
-    p.add_argument("--retriever_coverage_plot_path", type=str, default="out/retriever_coverage.png")
-    p.add_argument("--llm_coverage_plot_path", type=str, default="out/llm_coverage_plot.png")
+    p.add_argument("--retriever_coverage_plot_path", type=str, default="out/base_rejection/retriever_coverage_v4.png")
+    p.add_argument("--retriever_coverage_csv_path", type=str, default="out/base_rejection/retriever_coverage_v4.csv")
+    p.add_argument("--llm_coverage_plot_path", type=str, default="out/base_rejection/llm_coverage_plot_v4.png")
+    p.add_argument("--llm_coverage_csv_path", type=str, default="out/base_rejection/llm_coverage_plot_v4.csv")
     return p
 
 

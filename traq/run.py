@@ -481,7 +481,7 @@ ZERO_SHOT_TEMPLATE = (
 )
 
 QUESTION_ONLY_TEMPLATE = (
-    "Answer the following question shortly. If the question cannot be answered confidently, say Can't answer.\n"
+    "Answer the following question shortly.\n"
     "Question: {question}\n"
     "Answer:"
 )
@@ -844,6 +844,19 @@ def save_coverage_plot(
     plt.close()
 
 
+def save_coverage_curve_csv(
+    expected: Sequence[float],
+    empirical: Sequence[float],
+    path: str,
+) -> None:
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["expected_coverage", "empirical_coverage"])
+        for exp, emp in zip(expected, empirical):
+            writer.writerow([f"{float(exp):.6f}", f"{float(emp):.6f}"])
+
+
 
 def run(args: argparse.Namespace) -> None:
     rows = load_json_or_jsonl(args.input_path)
@@ -1053,7 +1066,9 @@ def run(args: argparse.Namespace) -> None:
             title="Retriever: Expected vs Empirical Coverage",
             path=args.retriever_coverage_plot_path,
         )
+        save_coverage_curve_csv(retr_expected, retr_empirical, args.retriever_coverage_csv_path)
         print(f"Saved retriever coverage plot: {args.retriever_coverage_plot_path}")
+        print(f"Saved retriever coverage CSV: {args.retriever_coverage_csv_path}")
 
     # ---- Optional LLM stage (same as before; uses ex['ctxs'] which is now combined) ----
     if args.enable_llm:
@@ -1446,7 +1461,9 @@ def run(args: argparse.Namespace) -> None:
                 title="LLM: Expected vs Empirical Coverage",
                 path=args.llm_coverage_plot_path,
             )
+            save_coverage_curve_csv(llm_expected, llm_empirical, args.llm_coverage_csv_path)
             print(f"Saved LLM coverage plot: {args.llm_coverage_plot_path}")
+            print(f"Saved LLM coverage CSV: {args.llm_coverage_csv_path}")
         elif args.plot_coverage and skip_passage_llm:
             print("Skipped LLM coverage plot because --skip_passage_llm disables passage-conditioned LLM calibration/eval.")
 
@@ -1513,9 +1530,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rouge_thr", type=float, default=0.7)
     p.add_argument("--few_shot_path", type=str, default=None)
 
-    p.add_argument("--retrieval_csv_path", type=str, default="retrieval_nonconformity.csv")
-    p.add_argument("--retriever_set_csv_path", type=str, default="retriever_set.csv")
-    p.add_argument("--prediction_set_csv_path", type=str, default="prediction_set.csv")
+    p.add_argument("--retrieval_csv_path", type=str, default="out/traq/retrieval_nonconformity.csv")
+    p.add_argument("--retriever_set_csv_path", type=str, default="out/traq/retriever_set.csv")
+    p.add_argument("--prediction_set_csv_path", type=str, default="out/traq/prediction_set.csv")
 
     p.add_argument("--retries", type=int, default=3)
     p.add_argument("--retry_sleep_s", type=float, default=0.5)
@@ -1541,8 +1558,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--moncp_weight", action="store_true", help="Use weighted quantiles in MonCP")
     p.add_argument("--plot_coverage", action="store_true", help="Plot expected vs empirical coverage curves")
     p.add_argument("--coverage_plot_points", type=int, default=20, help="Number of alpha grid points for coverage plots")
-    p.add_argument("--retriever_coverage_plot_path", type=str, default="out/retriever_coverage.png")
-    p.add_argument("--llm_coverage_plot_path", type=str, default="out/llm_coverage_plot.png")
+    p.add_argument("--retriever_coverage_plot_path", type=str, default="out/traq/retriever_coverage.png")
+    p.add_argument("--retriever_coverage_csv_path", type=str, default="out/traq/retriever_coverage.csv")
+    p.add_argument("--llm_coverage_plot_path", type=str, default="out/traq/llm_coverage_plot.png")
+    p.add_argument("--llm_coverage_csv_path", type=str, default="out/traq/llm_coverage_plot.csv")
 
     return p
 
