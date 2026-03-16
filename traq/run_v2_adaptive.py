@@ -145,6 +145,17 @@ def get_gold_aliases_norm(ex: Dict[str, Any]) -> List[str]:
     return out
 
 
+def get_gold_value(ex: Dict[str, Any]) -> Optional[str]:
+    ans = ex.get("Answer") or ex.get("answer") or {}
+    if not isinstance(ans, dict):
+        return None
+    val = ans.get("Value") if "Value" in ans else ans.get("value")
+    if val is None:
+        return None
+    txt = str(val).strip()
+    return txt if txt else None
+
+
 def any_gold_match(pred: str, golds_norm: List[str]) -> bool:
     p = norm_text(pred)
     if not p:
@@ -231,6 +242,35 @@ def rouge1_f1(a: str, b: str) -> float:
     prec = overlap / max(len(ta), 1)
     rec = overlap / max(len(tb), 1)
     return 2 * prec * rec / max(prec + rec, 1e-9)
+
+
+def compute_end_to_end_coverage(
+    rows: List[Dict[str, Any]],
+    eval_start: int,
+    rouge_thr: float = 0.3,
+) -> Tuple[int, int, float]:
+    hits = 0
+    total = 0
+    test_sizes: List[int] = []
+    for idx, ex in enumerate(rows):
+        ex["e2e_hit"] = None
+        ex["e2e_set_size"] = None
+        if idx < eval_start:
+            continue
+        gold = get_gold_value(ex)
+        if not gold:
+            continue
+        c_agg = ex.get("C_agg") or []
+        if not isinstance(c_agg, list):
+            c_agg = []
+        covered = any(rouge1_f1(str(ans), gold) > rouge_thr for ans in c_agg)
+        ex["e2e_hit"] = bool(covered)
+        ex["e2e_set_size"] = len(c_agg)
+        hits += int(covered)
+        total += 1
+        test_sizes.append(len(c_agg))
+    avg_size = float(np.mean(test_sizes)) if test_sizes else 0.0
+    return hits, total, avg_size
 
 
 def cluster_by_rouge(samples: List[str], thr: float = 0.7) -> List[List[str]]:
@@ -1097,13 +1137,6 @@ def run(args: argparse.Namespace) -> None:
     refusal_flags: List[bool] = []
     labels_for_refusal: List[int] = []
     avg_set_sizes_all: List[int] = []
-    hit_gold_all = 0
-    total_gold_all = 0
-
-    # True ECR counters — eval set only, exact match
-    ecr_hit_eval = 0
-    ecr_total_eval = 0
-    ecr_hit_substr_eval = 0
 
     for row_idx, ex in enumerate(tqdm(annotated, desc="Inference: build C_agg with rejection CP")):
         q = get_question(ex)
@@ -1171,34 +1204,6 @@ def run(args: argparse.Namespace) -> None:
             said_cant = any("can't answer" in str(a).lower() for a in C_agg)
             refusal_flags.append(bool(said_cant))
 
-        if golds:
-            total_gold_all += 1
-            label = int(ex.get("rej_label_ans") or 0)
-            if label == 0:
-                hit = any("can't answer" in str(a).lower() for a in C_agg)
-            else:
-                hit = any(any_gold_match(a, golds) for a in C_agg)
-            ex["hit_gold"] = bool(hit)
-            if hit:
-                hit_gold_all += 1
-
-        # ---- True ECR: eval set only ----
-        if golds and row_idx >= eval_start:
-            ecr_total_eval += 1
-            label_ecr = int(ex.get("rej_label_ans") or 0)
-            if label_ecr == 0:
-                hit_exact = any("can't answer" in str(a).lower() for a in C_agg)
-                hit_substr = hit_exact
-            else:
-                hit_exact = any(exact_match_norm(a, golds) for a in C_agg)
-                hit_substr = any(any_gold_match(a, golds) for a in C_agg)
-            ex["ecr_exact"] = bool(hit_exact)
-            ex["ecr_substr"] = bool(hit_substr)
-            if hit_exact:
-                ecr_hit_eval += 1
-            if hit_substr:
-                ecr_hit_substr_eval += 1
-
         avg_set_sizes_all.append(len(C_agg))
 
     # refusal metrics
@@ -1214,12 +1219,11 @@ def run(args: argparse.Namespace) -> None:
 
     if avg_set_sizes_all:
         print(f"\nAvg |C_agg| (all): {float(np.mean(avg_set_sizes_all)):.3f}")
-    if total_gold_all > 0:
-        print(f"Coverage proxy (hit_gold / total): {hit_gold_all}/{total_gold_all} = {hit_gold_all/total_gold_all:.3f}")
-    if ecr_total_eval > 0:
-        print(f"\n[ECR on eval set (rows {eval_start}..{n-1})]")
-        print(f"  Exact-match ECR:    {ecr_hit_eval}/{ecr_total_eval} = {ecr_hit_eval/ecr_total_eval:.4f}")
-        print(f"  Substring-match ECR: {ecr_hit_substr_eval}/{ecr_total_eval} = {ecr_hit_substr_eval/ecr_total_eval:.4f}")
+    e2e_hits, e2e_total, e2e_avg_size = compute_end_to_end_coverage(annotated, eval_start=eval_start, rouge_thr=0.3)
+    if e2e_total > 0:
+        print(f"\n[TRAQ End-to-End Coverage on test set (rows {eval_start}..{n-1})]")
+        print(f"  Coverage: {e2e_hits}/{e2e_total} = {e2e_hits / e2e_total:.4f}")
+        print(f"  Avg |C_agg| on test: {e2e_avg_size:.3f}")
 
     if args.plot_coverage:
         llm_eval_scores: List[float] = []
@@ -1289,14 +1293,14 @@ def run(args: argparse.Namespace) -> None:
                 ex.get("rej_NE_used"), ex.get("rej_mode"),
                 ex.get("rej_mode_step1"), ex.get("rej_mode_step2"),
                 json.dumps(ex.get("C_agg") or [], ensure_ascii=False),
-                ex.get("hit_gold"),
+                ex.get("e2e_hit"),
                 ex.get("ne_batches_wo"), ex.get("ne_batches_with"),
             ])
         write_csv(args.summary_csv_path,
                    ["question", "NE_wo", "p_can_wo", "p_cant_wo",
                     "NE_with", "p_can_with", "p_cant_with",
                     "NE_used", "rej_mode", "rej_mode_step1", "rej_mode_step2",
-                    "C_agg", "hit_gold", "ne_batches_wo", "ne_batches_with"],
+                    "C_agg", "e2e_hit", "ne_batches_wo", "ne_batches_with"],
                    rows_out)
         print(f"Saved summary CSV: {args.summary_csv_path}")
 

@@ -1,11 +1,12 @@
 datasets
 torch
 transformers
+sentence-transformers
 openai
+elasticsearch
 rouge-score
 tqdm
 numpy
 scikit-optimize
 pyyaml
-numpy
 matplotlib
